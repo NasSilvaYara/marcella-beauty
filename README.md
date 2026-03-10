@@ -53,7 +53,7 @@
 Em conformidade com o planejamento estratégico detalhado no Termo de Abertura do Projeto (Revisão 01), as definições técnicas e prazos seguem os parâmetros abaixo:
 </p>
 
-| PARÂMETRO TÉCNICO | DETALHAMNETO DO PROJETO |
+| PARÂMETRO TÉCNICO | DETALHAMENTO DO PROJETO |
 | :---: | :---:|
 | **Tecnologia Back-end** | PHP 8.x para processamento de dados e gestão de sessões |
 | **Banco de Dados** | MySQL para armazenamento seguro de informações |
