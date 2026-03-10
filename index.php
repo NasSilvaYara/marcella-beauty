@@ -9,9 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
-        /* ============================================================
-           CSS - RESET E CONFIGURAÇÕES GERAIS
-           ============================================================ */
         
         * {
             margin: 0;
@@ -43,10 +40,6 @@
             position: relative;
             z-index: 110;
         }
-
-        /* ============================================================
-           CSS - NAVEGAÇÃO (NAV)
-           ============================================================ */
 
         .nav-principal {
             display: flex;
