@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>MARCELLA GONÇALVES NAILS</h1>
+  <h1>MARCELLA GONÇALVES</h1>
 </div>
 
 <p align="justify">
@@ -23,7 +23,7 @@
 | :---: | :---: | :---: |
 | **Yara da Silva** | Gerente de Projeto, Dev. Back-end e UI Layout | [GitHub](https://github.com/NasSilvaYara) / [LinkedIn](https://www.linkedin.com/in/nassilvayara) |
 | **Gabriel Alves** | Gestão de Stakeholders e Documentação | [GitHub](#) / [LinkedIn](https://www.linkedin.com/in/gabriel-alves-798160382/) |
-| **Livia De Queiroz Schendroski** | Desenvolvedora Front-end e Documentação | [GitHub](#) / [LinkedIn](https://www.linkedin.com/in/livia-de-queiroz-schendroski-606b3926b/) |
+| **Livia Schendroski** | Desenvolvedora Front-end e Documentação | [GitHub](#) / [LinkedIn](https://www.linkedin.com/in/livia-de-queiroz-schendroski-606b3926b/) |
 | **Paulo Henrique** | Desenvolvedor Front-end e Documentação | [GitHub](#) / [LinkedIn](#) |
 
 </div>
