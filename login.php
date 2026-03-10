@@ -1,8 +1,4 @@
 <?php
-/**
- * login.php
- * Script para verificar as credenciais do utilizador e iniciar uma sessão.
- */
 
 // 1. Inicia a sessão do PHP (deve ser a primeira coisa no ficheiro)
 session_start();
