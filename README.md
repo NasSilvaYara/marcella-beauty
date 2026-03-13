@@ -21,11 +21,10 @@
 
 | INTEGRANTES | FUNÇÃO | REDES SOCIAIS |
 | :---: | :---: | :---: |
-| **Yara da Silva** | Gerente de Projeto, Dev. Back-end e UI Layout | [GitHub](https://github.com/NasSilvaYara) / [LinkedIn](https://www.linkedin.com/in/nassilvayara) |
-| **Gabriel Alves** | Gestão de Stakeholders e Documentação | [GitHub](#) / [LinkedIn](https://www.linkedin.com/in/gabriel-alves-798160382/) |
-| **Livia Schendroski** | Desenvolvedora Front-end e Documentação | [GitHub](#) / [LinkedIn](https://www.linkedin.com/in/livia-de-queiroz-schendroski-606b3926b/) |
-| **Paulo Henrique** | Desenvolvedor Front-end e Documentação | [GitHub](#) / [LinkedIn](#) |
-
+| **Yara da Silva** | Gerente de Projeto, responsável pelo protótipo e UI/UX Layout, modelagem e estruturação do Banco de Dados e elaboração de diagramas UML| [GitHub](https://github.com/NasSilvaYara) / [LinkedIn](https://www.linkedin.com/in/nassilvayara) |
+| **Gabriel Alves** | Responsável pela comunicação com a parceria (stakeholders) e suporte na elaboração da documentação do projeto | [GitHub](#) / [LinkedIn](https://www.linkedin.com/in/gabriel-alves-798160382/) |
+| **Livia Schendroski** | Desenvolvedora Front-end e Back-end, com participação na elaboração da documentação | [GitHub](#) / [LinkedIn](https://www.linkedin.com/in/livia-de-queiroz-schendroski-606b3926b/) |
+| **Paulo Henrique** | Desenvolvedor Front-end e Back-end, com participação na elaboração da documentação | [GitHub](#) / [LinkedIn](#) |
 </div>
 
 <br>
@@ -42,7 +41,7 @@
 ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
 ![XAMPP](https://img.shields.io/badge/XAMPP-%23FB7A24.svg?style=for-the-badge&logo=xampp&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black)
-![Figma](https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white)
+![Figma](https://img.shields.io/badge/Figma-%238A2BE2.svg?style=for-the-badge&logo=figma&logoColor=white)
 </div>
 
 <br>
@@ -60,7 +59,7 @@ Em conformidade com o planejamento estratégico detalhado no Termo de Abertura d
 | **Tecnologia Back-end** | PHP 8.x para processamento de dados e gestão de sessões |
 | **Banco de Dados** | MySQL para armazenamento seguro de informações |
 | **Protocolo de Segurança** | Implementação de Hash (BCRYPT) para proteção de senhas |
-| **Início do Projeto** | 23 de fevereiro de 2026 |
+| **Inicio do Projeto** | 23 de fevereiro de 2026 |
 | **Previsão de Término** | 25 de junho de 2026 |
 
 </div>
