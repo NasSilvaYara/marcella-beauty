@@ -1,9 +1,8 @@
 <?php
 session_start();
+require_once "config/db_config.php";
 
-$emailAdmin = "golcalvesmarcella@gmail.com";
-
-$isAdmin = (isset($_SESSION['user_email']) && $_SESSION['user_email'] === $emailAdmin);
+$logado = isset($_SESSION['usuario_id']);
 ?>
 
 <!DOCTYPE html>
@@ -349,8 +348,6 @@ $isAdmin = (isset($_SESSION['user_email']) && $_SESSION['user_email'] === $email
             --border-light: #eeeeee;
         }
 
-        /* CARD */
-
         .agendador {
             background: #fff;
             width: 100%;
@@ -562,6 +559,40 @@ $isAdmin = (isset($_SESSION['user_email']) && $_SESSION['user_email'] === $email
             font-weight: 700;
         }
 
+        /* Estilo geral do botão de hora */
+        .botao-hora {
+            background-color: #fff;
+            border: 1px solid #007bff;
+            color: #007bff;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        /* Estilo para quando o horário estiver OCUPADO */
+        .horario-indisponivel {
+            background-color: #f8d7da !important;
+            /* Vermelho bem claro */
+            border-color: #f5c6cb !important;
+            color: #721c24 !important;
+            /* Texto vinho */
+            cursor: not-allowed !important;
+            opacity: 0.7;
+            position: relative;
+        }
+
+        .horario-indisponivel span {
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
         /* FOOTER */
 
         .base {
@@ -716,7 +747,26 @@ $isAdmin = (isset($_SESSION['user_email']) && $_SESSION['user_email'] === $email
         .oculto {
             display: none;
         }
-    </style>
+
+        .btn-adm a {
+            background: linear-gradient(90deg, #8c77d8, #e07ddd);
+            color: white;
+            padding: 10px 28px;
+            border-radius: 50px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(157, 133, 247, 0.4);
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        a {
+        text-decoration: none;
+        }
+</style>
 </head>
 
 <body>
@@ -733,42 +783,31 @@ $isAdmin = (isset($_SESSION['user_email']) && $_SESSION['user_email'] === $email
                     <a href="#localizacao" class="nav-link">Localização</a>
                     <a href="#contatos" class="nav-link">Contatos</a>
                 </div>
-                <?php if ($isAdmin): ?>
-                    <a href="admin.php" style="color: #4f337c; 
-                            text-decoration: none; 
-                            font-weight: bold; 
-                            text-transform: uppercase; 
-                            font-size: 13px; 
-                            letter-spacing: 1px; 
-                            border: 1.5px solid ##4f337c; 
-                            padding: 8px 18px; 
-                            border-radius: 50px; 
-                            display: inline-block;
-                            transition: 0.3s;
-                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"> PAINEL ADMIN </a>
+
+                <?php if (isset($_SESSION['usuario_email']) && $_SESSION['usuario_email'] == $admin_email): ?>
+
+                    <div class="btn-adm"><a href="admin/painel.php">Painel Admin</a></div>
+
                 <?php endif; ?>
 
                 <div class="acoes-usuario">
-                    <!-- Lógica de Sessão Dinâmica -->
-                    <?php if (isset($_SESSION['user_id'])): ?>
+                    <?php if ($logado): ?>
                         <div class="user-info">
-                            <span class="user-greeting">Olá,
-                                <?php echo htmlspecialchars(explode(' ', $_SESSION['user_nome'])[0]); ?>!
+                            <span class="user-greeting">
+                                Olá, <?php echo htmlspecialchars(explode(' ', $_SESSION['usuario_nome'])[0]); ?>!
                             </span>
-                            <a href="logout.php" class="btn-logout">SAIR DA CONTA</a>
+
+                            <a href="auth/logout.php" class="btn-logout">SAIR DA CONTA</a>
                         </div>
                     <?php else: ?>
                         <a href="javascript:void(0)" class="nav-link" onclick="abrirLogin()" style="font-weight: 800;">
-                            <svg class="login-icon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
                             Login
                         </a>
                     <?php endif; ?>
 
                     <button class="botao-agendar">Agendar</button>
                 </div>
+
             </nav>
             <!-- Modal Login & Registro -->
             <div id="modalLogin" class="modal-login">
@@ -779,11 +818,11 @@ $isAdmin = (isset($_SESSION['user_email']) && $_SESSION['user_email'] === $email
                     <?php endif; ?>
 
                     <!-- Vista de Login -->
-                    <div id="containerLogin" class="vista-login">
+                    <div id="containerLogin" class="vista-login <?php echo $logado ? 'escondido' : ''; ?>">
                         <h3
                             style="margin-bottom: 25px; font-family: 'Playfair Display', serif; font-size: 26px; color: #3b2166;">
                             Bem-vinda de volta</h3>
-                        <form id="formLogin" method="POST" action="login.php">
+                        <form id="formLogin" method="POST" action="auth/login.php">
                             <input type="email" name="email" class="input-login" placeholder="E-mail" required>
                             <input type="password" name="senha" class="input-login" placeholder="Palavra-passe"
                                 required>
@@ -842,51 +881,15 @@ $isAdmin = (isset($_SESSION['user_email']) && $_SESSION['user_email'] === $email
                     </div>
 
                     <div id="meu-agendamento" class="meu-agendamento oculto"></div>
-
-                    <?php if ($isAdmin): ?>
-                        <div id="painel-exclusivo-marcella"
-                            style="background: #fdfafd; border: 2px solid #a066ff; padding: 20px; border-radius: 25px; margin-bottom: 30px;">
-                            <h3 style="color: #a066ff;">Olá, Marcella! Gerencie sua Agenda</h3>
-                            <p>Selecione um dia no calendário abaixo para abrir ou fechar horários.</p>
-
-                            <div id="editor-agenda-admin" class="hidden">
-                                <h4 id="data-selecionada-label"></h4>
-                                <input type="time" id="input-hora-admin">
-                                <button onclick="adicionarHorarioNoBanco()">Liberar Horário</button>
-                            </div>
-
-                            <div id="gerenciador-horarios" class="escondido"
-                                style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px;">
-                                <p style="font-size: 0.8rem;"><b>Editando:</b> <span id="data-texto-admin">Selecione um
-                                        dia</span></p>
-
-                                <div style="display: flex; gap: 10px; margin: 10px 0;">
-                                    <input type="time" id="input-nova-hora"
-                                        style="padding: 8px; border-radius: 8px; border: 1px solid #ddd;">
-                                    <button onclick="adicionarHoraManual()"
-                                        style="background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer;">+</button>
-                                </div>
-
-                                <div id="lista-preview-admin"
-                                    style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
-                                </div>
-
-                                <button onclick="finalizarDiaAdmin()"
-                                    style="width: 100%; background: #a066ff; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer;">
-                                    CONFIRMAR AGENDA DESTE DIA
-                                </button>
-                            </div>
-                        </div>
-                    <?php endif; ?>
                 </div>
             </section>
         </div>
 
         <section id="servicos">
             <h2 class="section-title">SERVIÇOS</h2>
-            <?php if (isset($_SESSION['user_id'])): ?>
+            <?php if (isset($_SESSION['usuario_id'])): ?>
                 <p>Olá
-                    <?php echo htmlspecialchars($_SESSION['user_nome']); ?>, explore os nossos serviços exclusivos
+                    <?php echo htmlspecialchars($_SESSION['usuario_nome']); ?>, explore os nossos serviços exclusivos
                     abaixo.
                 </p>
             <?php else: ?>
@@ -1084,713 +1087,541 @@ $isAdmin = (isset($_SESSION['user_email']) && $_SESSION['user_email'] === $email
     </div>
 
     <script>
-        // 1. ESTADO GLOBAL (Dados que o sistema inteiro usa)
-        let viewDate = new Date();
-        let minDate = new Date();
-        let maxDate = new Date();
-        maxDate.setMonth(maxDate.getMonth() + 2);
+    /**
+     * ESTADO GLOBAL
+     */
+    let viewDate = new Date();
+    let minDate = new Date();
+    let maxDate = new Date();
+    maxDate.setMonth(maxDate.getMonth() + 2);
 
-        let selectedFullDate = null;
-        let selectedTimeValue = null;
-        let agendaVindaDoBanco = {}; // Armazena os horários dinâmicos
+    let selectedFullDate = null;
+    let selectedTimeValue = null;
+    let agendaVindaDoBanco = {}; 
 
-        // 2. INTEGRAÇÃO PHP -> JS
-        // Essas variáveis vêm do servidor
-        const IS_ADMIN = <?php echo $isAdmin ? 'true' : 'false'; ?>;
-        const USER_NAME = "<?php echo $_SESSION['user_name'] ?? 'Visitante'; ?>";
+    // Integração PHP
+    const USUARIO_NAME = "<?php echo $_SESSION['usuario_name'] ?? 'Visitante'; ?>";
+    const IS_ADMIN = "<?php echo (isset($_SESSION['usuario_tipo']) && $_SESSION['usuario_tipo'] === 'admin') ? 'true' : 'false'; ?>";
 
-        // 3. FUNÇÕES DE BUSCA (BACKEND)
-        async function carregarAgendaDoBanco() {
-            const mesAtual = viewDate.getMonth() + 1;
-            const anoAtual = viewDate.getFullYear();
-            try {
-                const resposta = await fetch(`get_agenda.php?mes=${mesAtual}&ano=${anoAtual}`);
-                agendaVindaDoBanco = await resposta.json();
-                renderCalendar(); // Redesenha com os dados novos
-            } catch (erro) {
-                console.error("Erro ao carregar agenda:", erro);
-            }
-        }
-
-        async function salvarHorarioNoBanco(dataSelecionada, horaDigitada, acao = 'adicionar') {
-            const payload = { dados: dataSelecionada, hora: horaDigitada, acao: acao };
-            try {
-                const resposta = await fetch('salvar_agenda.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const resultado = await resposta.json();
-                if (resultado.status === 'sucesso') {
-                    carregarAgendaDoBanco(); // Atualiza a lista local
+    /**
+     * DADOS DOS SERVIÇOS
+     */
+    const dados = {
+        manicure: {
+            nome: "Manicure",
+            servicos: [
+                { nome: "Manicure", tempo: "45 MIN", preco: 35 },
+                { nome: "Pedicure", tempo: "45 MIN", preco: 50 },
+                { nome: "Alongamento de unhas", tempo: "120 MIN", preco: 120 },
+                { nome: "Banho de gel", tempo: "60 MIN", preco: 70 },
+                { nome: "Esmaltação permanente", tempo: "45 MIN", preco: 50 },
+                { nome: "Spa dos pés", tempo: "40 MIN", preco: 60 }
+            ]
+        },
+        massoterapia: {
+            nome: "Massoterapia",
+            servicos: [
+                { nome: "Massagem relaxante", tempo: "60 MIN", preco: 130 },
+                { nome: "Massagem terapêutica", tempo: "60 MIN", preco: 130 },
+                { nome: "Drenagem e modeladora", tempo: "60 MIN", preco: 150 },
+                { nome: "Bandagem terapêutica (Taping)", tempo: "30 MIN", preco: 80 },
+                { nome: "Drenagem pós parto e operatório", tempo: "60 MIN", preco: 160 }
+            ]
+        },
+        depilacao: {
+            nome: "Depilação",
+            filtro: true,
+            subs: {
+                facial: {
+                    nome: "Facial",
+                    servicos: [
+                        { nome: "Depilação de Buço", tempo: "15 MIN", preco: 25 },
+                        { nome: "Depilação de Sobrancelha (Cera)", tempo: "20 MIN", preco: 35 },
+                        { nome: "Depilação de Rosto Completo", tempo: "40 MIN", preco: 60 }
+                    ]
+                },
+                corporal: {
+                    nome: "Corporal",
+                    servicos: [
+                        { nome: "Depilação de Axilas", tempo: "20 MIN", preco: 30 },
+                        { nome: "Depilação de Meia Perna", tempo: "30 MIN", preco: 45 },
+                        { nome: "Depilação de Perna Inteira", tempo: "50 MIN", preco: 80 },
+                        { nome: "Depilação de Braços", tempo: "30 MIN", preco: 40 }
+                    ]
+                },
+                intima: {
+                    nome: "Íntima",
+                    servicos: [
+                        { nome: "Depilação de Virilha Simples", tempo: "30 MIN", preco: 50 },
+                        { nome: "Depilação de Virilha Completa", tempo: "50 MIN", preco: 90 },
+                        { nome: "Depilação de Ânus", tempo: "20 MIN", preco: 30 }
+                    ]
                 }
-            } catch (erro) { console.error(erro); }
-        }
-
-        // 4. FUNÇÕES DE INTERFACE (MODAIS E LOGIN)
-        function abrirLogin() { document.getElementById('modalLogin').style.display = 'flex'; }
-        function fecharLogin() { document.getElementById('modalLogin').style.display = 'none'; }
-
-        function handleCredentialResponse(response) {
-            // ... seu código do Google aqui ...
-        }
-
-        let listaTemporariaAdmin = [];
-
-        // Esta função é chamada quando o ADMIN clica em um dia no calendário
-        function abrirEditorAdmin(dateKey) {
-            selectedFullDate = dateKey; // Seta a data global
-            document.getElementById('gerenciador-horarios').classList.remove('escondido');
-            document.getElementById('data-texto-admin').innerText = dateKey;
-
-            // Busca o que já existe no banco para esse dia (caso ela queira editar)
-            listaTemporariaAdmin = agendaVindaDoBanco[dateKey] || [];
-            renderizarPreviewAdmin();
-        }
-
-        function adicionarHoraManual() {
-            const hora = document.getElementById('input-nova-hora').value;
-            if (hora && !listaTemporariaAdmin.includes(hora)) {
-                listaTemporariaAdmin.push(hora);
-                listaTemporariaAdmin.sort(); // Mantém em ordem cronológica
-                renderizarPreviewAdmin();
             }
+        },
+        lash: {
+            nome: "Lash",
+            servicos: [
+                { nome: "Extensão de cílios", tempo: "120 MIN", preco: 200 },
+                { nome: "Designer de sobrancelhas", tempo: "30 MIN", preco: 60 }
+            ]
+        },
+        estetica: {
+            nome: "Estética",
+            servicos: [
+                { nome: "Preenchimento Labial", tempo: "40 MIN", preco: 1500 },
+                { nome: "Botox", tempo: "30 MIN", preco: 1000 },
+                { nome: "Aplicação em vasinhos", tempo: "30 MIN", preco: 250 },
+                { nome: "Aplicação de enzimas", tempo: "30 MIN", preco: 300 }
+            ]
         }
+    };
 
-        function renderizarPreviewAdmin() {
-            const cont = document.getElementById('lista-preview-admin');
-            cont.innerHTML = listaTemporariaAdmin.map(h => `
-        <span style="background: #f5efff; color: #a066ff; padding: 5px 10px; border-radius: 20px; font-size: 0.7rem; border: 1px solid #a066ff;">
-            ${h} <b onclick="removerHoraLista('${h}')" style="color:red; cursor:pointer; margin-left:5px;">&times;</b>
-        </span>
-    `).join('');
-        }
+    let categoriaAtual = null;
+    let subAtual = null;
+    let servicosSelecionados = [];
+    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    let data = new Date();
 
-        function removerHoraLista(h) {
-            listaTemporariaAdmin = listaTemporariaAdmin.filter(item => item !== h);
-            renderizarPreviewAdmin();
-        }
+    /**
+     * FUNÇÕES DE BACKEND (FETCH)
+     */
+    async function carregarAgendaDoBanco() {
+        const mesAtual = viewDate.getMonth() + 1;
+        const anoAtual = viewDate.getFullYear();
+        try {
+            const resposta = await fetch(`get_agenda.php?mes=${mesAtual}&ano=${anoAtual}`);
+            agendaVindaDoBanco = await resposta.json();
+            renderCalendar();
+        } catch (erro) { console.error("Erro ao carregar agenda:", erro); }
+    }
 
-        async function finalizarDiaAdmin() {
-            // Aqui usamos aquela função de salvar no banco (Passo 2)
-            // Para simplificar, você pode enviar a lista inteira ou fazer um loop
-            // No padrão FATEC, o ideal é enviar a data e a lista final para o PHP tratar
-
-            const payload = {
-                dados: selectedFullDate,
-                horarios: listaTemporariaAdmin // Enviamos o array completo
-            };
-
-            const resp = await fetch('salvar_agenda_completa.php', {
+    async function salvarHorarioNoBanco(dataSelecionada, horaDigitada, acao = 'adicionar') {
+        const payload = { dados: dataSelecionada, hora: horaDigitada, acao: acao };
+        try {
+            const resposta = await fetch('salvar_agenda.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+            const resultado = await resposta.json();
+            if (resultado.status === 'sucesso') carregarAgendaDoBanco();
+        } catch (erro) { console.error(erro); }
+    }
 
-            const res = await resp.json();
-            if (res.status === 'sucesso') {
-                alert("Agenda do dia " + selectedFullDate + " atualizada com sucesso!");
-                carregarAgendaDoBanco(); // Atualiza o calendário global
-            }
-        }
-
-        // 5. FUNÇÕES DE RENDERIZAÇÃO (O "CORAÇÃO" DO FRONT)
-        function renderCategories() {
-            const container = document.getElementById('categorias');
-            if (!container) return;
-            container.innerHTML = '';
-
-            if (IS_ADMIN) {
-                dados["administrado"] = {
-                    name: "MINHA AGENDA",
-                    isDynamic: true, // Adicione essa flag aqui!
-                    services: [{ name: "Horário de Atendimento", duration: "--", price: 0 }]
-                };
-            }
-
-            Object.keys(dados).forEach(key => {
-                // ... código que cria os botões das categorias ...
-            });
-        }
-
-        function renderCalendar() {
-            for (let d = 1; d <= daysInMonth; d++) {
-                const el = document.createElement('div');
-                el.className = 'numero-dia'; // Traduzido: day-number -> numero-dia
-                el.innerText = d;
-
-                const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-
-                if (dados[currentCategory] && dados[currentCategory].isDynamic) {
-                    if (IS_ADMIN) {
-                        el.classList.add('visao-admin'); // Traduzido: admin-view -> visao-admin
-                        if (selectedFullDate === dateKey) el.classList.add('dia-selecionado');
-
-                        el.onclick = () => {
-                            selectedFullDate = dateKey;
-                            abrirEditorAdmin(dateKey);
-                            renderCalendar();
-                            renderTimes();
-                        };
-                    } else {
-                        const temHorarios = agendaVindaDoBanco[dateKey] && agendaVindaDoBanco[dateKey].length > 0;
-
-                        if (!temHorarios) {
-                            el.classList.add('dia-desativado'); // Traduzido: disabled -> dia-desativado
-                        } else {
-                            el.classList.add('dia-disponivel'); // Traduzido: available -> dia-disponivel
-                            if (selectedFullDate === dateKey) el.classList.add('dia-selecionado');
-
-                            el.onclick = () => {
-                                selectedFullDate = dateKey;
-                                renderCalendar();
-                                renderTimes();
-                            };
-                        }
-                    }
-                }
-                container.appendChild(el);
-            }
-        }
-
-        function renderTimes() {
+    async function carregarHorariosDisponiveis(dataEscolhida) {
+        try {
+            const res = await fetch(`backend/buscar_disponibilidade.php?data=${dataEscolhida}`);
+            const horarios = await res.json();
             const container = document.getElementById('horas');
             if (!container) return;
 
-            // 1. Limpa o que tinha antes
-            container.innerHTML = '';
-
-            // 2. Define quais horários mostrar
-            let slots = [];
-            if (dados[currentCategory].isDynamic) {
-                slots = agendaVindaDoBanco[selectedFullDate] || [];
-            } else {
-                slots = ["09:00", "10:00", "14:00"]; // Seus horários padrão fixos
-            }
-
-            // 3. Verifica se está vazio
-            if (slots.length === 0) {
+            if (horarios.length === 0) {
                 container.innerHTML = '<p class="texto-vazio">Nenhum horário disponível.</p>';
+                selectedTimeValue = null;
                 return;
             }
 
-            // 4. Cria as "pills" na tela
-            slots.forEach(hora => {
+            container.innerHTML = '';
+            horarios.forEach(hora => {
                 const div = document.createElement('div');
-                // Usando as classes que você traduziu
                 div.className = `item-horario ${selectedTimeValue === hora ? 'selecionado' : ''}`;
                 div.innerText = hora;
-
                 div.onclick = () => {
                     selectedTimeValue = hora;
-                    renderTimes(); // Re-renderiza para mostrar qual foi selecionado
-                    if (typeof atualizarBotoes === "function") atualizarBotoes();
+                    renderTimes(); 
                 };
-
                 container.appendChild(div);
             });
+        } catch (erro) { console.error("Erro ao buscar horários:", erro); }
+    }
+
+    /**
+     * MÓDULO ADMIN
+     */
+    let listaTemporariaAdmin = [];
+
+    function abrirEditorAdmin(dateKey) {
+        selectedFullDate = dateKey;
+        document.getElementById('gerenciador-horarios').classList.remove('escondido');
+        document.getElementById('data-texto-admin').innerText = dateKey;
+        listaTemporariaAdmin = agendaVindaDoBanco[dateKey] || [];
+        renderizarPreviewAdmin();
+    }
+
+    function adicionarHoraManual() {
+        const hora = document.getElementById('input-nova-hora').value;
+        if (hora && !listaTemporariaAdmin.includes(hora)) {
+            listaTemporariaAdmin.push(hora);
+            listaTemporariaAdmin.sort();
+            renderizarPreviewAdmin();
+        }
+    }
+
+    function renderizarPreviewAdmin() {
+        const cont = document.getElementById('lista-preview-admin');
+        cont.innerHTML = listaTemporariaAdmin.map(h => `
+            <span style="background: #f5efff; color: #a066ff; padding: 5px 10px; border-radius: 20px; font-size: 0.7rem; border: 1px solid #a066ff;">
+                ${h} <b onclick="removerHoraLista('${h}')" style="color:red; cursor:pointer; margin-left:5px;">&times;</b>
+            </span>
+        `).join('');
+    }
+
+    function removerHoraLista(h) {
+        listaTemporariaAdmin = listaTemporariaAdmin.filter(item => item !== h);
+        renderizarPreviewAdmin();
+    }
+
+    async function finalizarDiaAdmin() {
+        const payload = { dados: selectedFullDate, horarios: listaTemporariaAdmin };
+        const resp = await fetch('salvar_agenda_completa.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const res = await resp.json();
+        if (res.status === 'sucesso') {
+            alert("Agenda do dia " + selectedFullDate + " atualizada!");
+            carregarAgendaDoBanco();
+        }
+    }
+
+    /**
+     * INTERFACE E NAVEGAÇÃO
+     */
+    function iniciar() {
+        desenharCategorias();
+        carregarAgendaDoBanco();
+        carregarAgendamento(); // Função que carrega agendamentos do localStorage
+    }
+
+    function desenharCategorias() {
+        const div = document.getElementById("categorias");
+        if (!div) return;
+        div.innerHTML = "";
+
+        if (IS_ADMIN === "true") {
+            dados["administrado"] = {
+                nome: "MINHA AGENDA",
+                isDynamic: true,
+                services: [{ name: "Horário de Atendimento", duration: "--", price: 0 }]
+            };
         }
 
-        // 6. INICIALIZAÇÃO (Roda quando a página abre)
-
-        function toggleVistas() {
-            const login = document.getElementById('containerLogin');
-            const registro = document.getElementById('containerRegistro');
-
-            // Alterna a classe 'escondido' entre os dois containers
-            login.classList.toggle('escondido');
-            registro.classList.toggle('escondido');
+        for (let chave in dados) {
+            const btn = document.createElement("div");
+            btn.className = "item";
+            btn.innerText = dados[chave].nome;
+            btn.onclick = () => selecionarCategoria(chave, btn);
+            div.appendChild(btn);
         }
+    }
 
-        // Agendar 
+    function selecionarCategoria(chave, botao) {
+        categoriaAtual = chave;
+        subAtual = null;
+        document.querySelectorAll(".item").forEach(el => el.classList.remove("ativo"));
+        botao.classList.add("ativo");
+        mostrarSubcategorias();
+        mostrarServicos();
+    }
 
-        const dados = {
-            manicure: {
-                nome: "Manicure",
-                servicos: [
-                    { nome: "Manicure", tempo: "45 MIN", preco: 35 },
-                    { nome: "Pedicure", tempo: "45 MIN", preco: 50 },
-                    { nome: "Alongamento de unhas", tempo: "120 MIN", preco: 120 },
-                    { nome: "Banho de gel", tempo: "60 MIN", preco: 70 },
-                    { nome: "Esmaltação permanente", tempo: "45 MIN", preco: 50 },
-                    { nome: "Spa dos pés", tempo: "40 MIN", preco: 60 }
-                ]
-            },
-            massoterapia: {
-                nome: "Massoterapia",
-                servicos: [
-                    { nome: "Massagem relaxante", tempo: "60 MIN", preco: 130 },
-                    { nome: "Massagem terapêutica", tempo: "60 MIN", preco: 130 },
-                    { nome: "Drenagem e modeladora", tempo: "60 MIN", preco: 150 },
-                    { nome: "Bandagem terapêutica (Taping)", tempo: "30 MIN", preco: 80 },
-                    { nome: "Drenagem pós parto e operatório", tempo: "60 MIN", preco: 160 }
-                ]
-            },
-            depilacao: {
-                nome: "Depilação",
-                filtro: true,
-                subs: {
-                    facial: {
-                        nome: "Facial",
-                        servicos: [
-                            { nome: "Depilação de Buço", tempo: "15 MIN", preco: 25 },
-                            { nome: "Depilação de Sobrancelha (Cera)", tempo: "20 MIN", preco: 35 },
-                            { nome: "Depilação de Rosto Completo", tempo: "40 MIN", preco: 60 }
-                        ]
-                    },
-                    corporal: {
-                        nome: "Corporal",
-                        servicos: [
-                            { nome: "Depilação de Axilas", tempo: "20 MIN", preco: 30 },
-                            { nome: "Depilação de Meia Perna", tempo: "30 MIN", preco: 45 },
-                            { nome: "Depilação de Perna Inteira", tempo: "50 MIN", preco: 80 },
-                            { nome: "Depilação de Braços", tempo: "30 MIN", preco: 40 }
-                        ]
-                    },
-                    intima: {
-                        nome: "Íntima",
-                        servicos: [
-                            { nome: "Depilação de Virilha Simples", tempo: "30 MIN", preco: 50 },
-                            { nome: "Depilação de Virilha Completa", tempo: "50 MIN", preco: 90 },
-                            { nome: "Depilação de Ânus", tempo: "20 MIN", preco: 30 }
-                        ]
+    function mostrarSubcategorias() {
+        const div = document.getElementById("subcategorias");
+        div.innerHTML = "";
+        const cat = dados[categoriaAtual];
+        if (!cat.filtro) { div.style.display = "none"; return; }
+        div.style.display = "flex";
+        for (let sub in cat.subs) {
+            const btn = document.createElement("div");
+            btn.className = "item";
+            btn.innerText = cat.subs[sub].nome;
+            btn.onclick = () => {
+                subAtual = sub;
+                document.querySelectorAll("#subcategorias .item").forEach(el => el.classList.remove("ativo"));
+                btn.classList.add("ativo");
+                mostrarServicos();
+            };
+            div.appendChild(btn);
+        }
+    }
+
+    function mostrarServicos() {
+        const div = document.getElementById("lista-servicos");
+        div.innerHTML = "";
+        if (!categoriaAtual) return;
+        let lista = dados[categoriaAtual].filtro ? (subAtual ? dados[categoriaAtual].subs[subAtual].servicos : []) : dados[categoriaAtual].servicos;
+        lista.forEach(serv => {
+            const item = document.createElement("div");
+            item.className = "servico";
+            item.innerHTML = `<div><div class="nome">${serv.nome}</div><div class="tempo">${serv.tempo}</div></div><div class="preco">R$ ${serv.preco}</div>`;
+            item.onclick = () => selecionarServico(item, serv);
+            div.appendChild(item);
+        });
+    }
+
+    function renderCalendar() {
+        const container = document.getElementById("calendario");
+        container.innerHTML = "";
+        let year = viewDate.getFullYear();
+        let month = viewDate.getMonth();
+        let daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        for (let d = 1; d <= daysInMonth; d++) {
+            const el = document.createElement('div');
+            el.className = 'numero-dia';
+            el.innerText = d;
+            const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+
+            if (dados[categoriaAtual] && dados[categoriaAtual].isDynamic) {
+                if (IS_ADMIN === "true") {
+                    el.classList.add('visao-admin');
+                    if (selectedFullDate === dateKey) el.classList.add('dia-selecionado');
+                    el.onclick = () => {
+                        selectedFullDate = dateKey;
+                        abrirEditorAdmin(dateKey);
+                        renderCalendar();
+                        carregarHorariosDisponiveis(dateKey);
+                    };
+                } else {
+                    const temHorarios = agendaVindaDoBanco[dateKey] && agendaVindaDoBanco[dateKey].length > 0;
+                    if (!temHorarios) el.classList.add('dia-desativado');
+                    else {
+                        el.classList.add('dia-disponivel');
+                        if (selectedFullDate === dateKey) el.classList.add('dia-selecionado');
+                        el.onclick = () => {
+                            selectedFullDate = dateKey;
+                            renderCalendar();
+                        };
                     }
                 }
-            },
-            lash: {
-                nome: "Lash",
-                servicos: [
-                    { nome: "Extensão de cílios", tempo: "120 MIN", preco: 200 },
-                    { nome: "Designer de sobrancelhas", tempo: "30 MIN", preco: 60 }
-                ]
-            },
-            estetica: {
-                nome: "Estética",
-                servicos: [
-                    { nome: "Preenchimento Labial", tempo: "40 MIN", preco: 1500 },
-                    { nome: "Botox", tempo: "30 MIN", preco: 1000 },
-                    { nome: "Aplicação em vasinhos", tempo: "30 MIN", preco: 250 },
-                    { nome: "Aplicação de enzimas", tempo: "30 MIN", preco: 300 }
-                ]
             }
+            container.appendChild(el);
+        }
+    }
+
+    /**
+     * LÓGICA DE TEMPO E AGENDAMENTO
+     */
+    function selecionarServico(div, serv) {
+        if (div.classList.contains("eleito")) {
+            div.classList.remove("eleito");
+            servicosSelecionados = servicosSelecionados.filter(s => s.nome !== serv.nome);
+        } else {
+            div.classList.add("eleito");
+            servicosSelecionados.push(serv);
+        }
+        atualizarBotao();
+    }
+
+    function atualizarBotao() {
+        const btn = document.getElementById("proximo");
+        if (servicosSelecionados.length > 0) {
+            btn.classList.add("pronto");
+            btn.onclick = () => irParaEtapa(2);
+        }
+    }
+
+    function irParaEtapa(numero) {
+        document.getElementById("etapa1").classList.add("oculto");
+        document.getElementById("etapa2").classList.add("oculto");
+        document.getElementById("etapa3").classList.add("oculto");
+        document.getElementById("etapa" + numero).classList.remove("oculto");
+        if (numero === 3) mostrarResumo();
+    }
+
+    function voltar() {
+        document.getElementById("etapa2").classList.add("oculto");
+        document.getElementById("etapa1").classList.remove("oculto");
+    }
+
+    function pegarMinutos(tempo) { return parseInt(tempo.replace(" MIN", "")); }
+
+    function calcularDuracaoTotal() {
+        let total = 0;
+        servicosSelecionados.forEach(serv => { total += pegarMinutos(serv.tempo); });
+        return total;
+    }
+
+    function calcularTotal() {
+        return servicosSelecionados.reduce((acc, s) => acc + s.preco, 0);
+    }
+
+    function mostrarResumo() {
+        const container = document.getElementById("resumo-servicos");
+        const totalEl = document.getElementById("total-agendamento");
+        container.innerHTML = "";
+        let total = 0;
+        servicosSelecionados.forEach(serv => {
+            const div = document.createElement("div");
+            div.style.cssText = "display:flex; justify-content:space-between; margin-bottom:8px;";
+            div.innerHTML = `<span>${serv.nome}</span><span>R$ ${serv.preco}</span>`;
+            container.appendChild(div);
+            total += serv.preco;
+        });
+        totalEl.innerText = "R$ " + total;
+        document.getElementById("resumo-data").innerText = selectedFullDate;
+        document.getElementById("resumo-hora").innerText = selectedTimeValue;
+    }
+
+    /**
+     * AUTENTICAÇÃO E MODAIS
+     */
+    function abrirLogin() { document.getElementById('modalLogin').style.display = 'flex'; }
+    function fecharLogin() { document.getElementById('modalLogin').style.display = 'none'; }
+    function toggleVistas() {
+        document.getElementById('containerLogin').classList.toggle('escondido');
+        document.getElementById('containerRegistro').classList.toggle('escondido');
+    }
+
+    function handleCredentialResponse(response) {
+        fetch("auth/login_google.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id_token: response.credential })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) window.location.href = "index.php";
+            else alert("Erro: " + data.message);
+        });
+    }
+
+    /**
+     * FINALIZAÇÃO E NOTIFICAÇÃO
+     */
+    function confirmarAgendamento() {
+        const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+        if (!usuario) { alert("Você precisa estar logado!"); return; }
+
+        const dadosParaEnviar = {
+            cliente_nome: usuario.nome,
+            data: selectedFullDate,
+            hora_inicio: selectedTimeValue,
+            duracao: calcularDuracaoTotal(),
+            servicos: servicosSelecionados.map(s => s.nome),
+            valor_total: calcularTotal()
         };
 
-        let categoriaAtual = null;
-        let subAtual = null;
-        let servicosSelecionados = [];
-        let dataSelecionada = null;
-        let horaSelecionada = null;
+        fetch("backend/salvar_agendamento.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(dadosParaEnviar)
+        })
+        .then(res => res.json())
+        .then(resposta => {
+            if (resposta.status === "ok") mostrarNotificacao();
+            else alert("Erro ao salvar");
+        });
+    }
 
-        const meses = [
-            "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-            "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
-        ];
+    function mostrarNotificacao() {
+        const n = document.getElementById("notificacao");
+        n.classList.remove("oculto");
+        setTimeout(() => n.classList.add("oculto"), 3000);
+    }
 
-        let data = new Date();
+    function carregarAgendamento() {
+        const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+        if (!usuario) return;
+        fetch("/api/salvar_agendamento/" + usuario.id)
+        .then(res => res.json())
+        .then(agendamento => {
+            if (!agendamento) return;
+            const container = document.getElementById("meu-agendamento");
+            if (!container) return;
+            container.innerHTML = `<h3>Seu Agendamento</h3><p><b>Data:</b> ${agendamento.data}</p><p><b>Total:</b> ${agendamento.total}</p>`;
+            container.classList.remove("oculto");
+        });
+    }
 
-        function iniciar() {
-
-            desenharCategorias();
-            desenharCalendario();
-
-        }
-
-        function desenharCategorias() {
-
-            const div = document.getElementById("categorias");
-            div.innerHTML = "";
-
-            for (let chave in dados) {
-
-                const btn = document.createElement("div");
-                btn.className = "item";
-                btn.innerText = dados[chave].nome;
-
-                btn.onclick = () => selecionarCategoria(chave, btn);
-
-                div.appendChild(btn);
-
-            }
-
-        }
-
-        function selecionarCategoria(chave, botao) {
-
-            categoriaAtual = chave;
-            subAtual = null;
-
-            document.querySelectorAll(".item").forEach(el => el.classList.remove("ativo"));
-            botao.classList.add("ativo");
-
-            mostrarSubcategorias();
-            mostrarServicos();
-
-        }
-
-        function mostrarSubcategorias() {
-
-            const div = document.getElementById("subcategorias");
-            div.innerHTML = "";
-
-            const cat = dados[categoriaAtual];
-
-            if (!cat.filtro) {
-                div.style.display = "none";
-                return;
-            }
-
-            div.style.display = "flex";
-
-            for (let sub in cat.subs) {
-
-                const btn = document.createElement("div");
-                btn.className = "item";
-                btn.innerText = cat.subs[sub].nome;
-
-                btn.onclick = () => {
-
-                    subAtual = sub;
-
-                    document.querySelectorAll("#subcategorias .item")
-                        .forEach(el => el.classList.remove("ativo"));
-
-                    btn.classList.add("ativo");
-
-                    mostrarServicos();
-
-                }
-
-                div.appendChild(btn);
-
-            }
-
-        }
-
-        function mostrarServicos() {
-
-            const div = document.getElementById("lista-servicos");
-            div.innerHTML = "";
-
-            if (!categoriaAtual) return;
-
-            let lista = [];
-
-            if (dados[categoriaAtual].filtro) {
-
-                if (!subAtual) return;
-
-                lista = dados[categoriaAtual].subs[subAtual].servicos;
-
+    function renderizarHorarios(horasOcupadas) {
+        const container = document.getElementById('horas');
+        container.innerHTML = "";
+        const horariosFuncionamento = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00"]; // Exemplo
+        horariosFuncionamento.forEach(hora => {
+            const botao = document.createElement('button');
+            botao.className = 'botao-hora';
+            botao.innerHTML = hora;
+            if (horasOcupadas.includes(hora)) {
+                botao.classList.add('horario-indisponivel');
+                botao.disabled = true;
+                botao.innerHTML += " <span>(Ocupado)</span>";
             } else {
-
-                lista = dados[categoriaAtual].servicos;
-
+                botao.onclick = () => { selectedTimeValue = hora; };
             }
+            container.appendChild(botao);
+        });
+    }
 
-            lista.forEach(serv => {
-
-                const item = document.createElement("div");
-                item.className = "servico";
-
-                item.innerHTML = `
-            <div>
-                <div class="nome">${serv.nome}</div>
-                <div class="tempo">${serv.tempo}</div>
-            </div>
-            <div class="preco">R$ ${serv.preco}</div>
-        `;
-
-                item.onclick = () => selecionarServico(item, serv);
-
-                div.appendChild(item);
-
-            });
-
-        }
-
-        function selecionarServico(div, serv) {
-
-            if (div.classList.contains("eleito")) {
-
-                div.classList.remove("eleito");
-
-                servicosSelecionados = servicosSelecionados
-                    .filter(s => s.nome !== serv.nome);
-
-            } else {
-
-                div.classList.add("eleito");
-                servicosSelecionados.push(serv);
-
+    // Inicialização e Listeners
+    document.addEventListener('DOMContentLoaded', function() {
+    const elementoCalendario = document.getElementById('calendarioMini');
+    
+    window.calendarioMini = new FullCalendar.Calendar(elementoCalendario, {
+        initialView: 'dayGridMonth',
+        locale: 'pt-br',
+        height: 380,
+        headerToolbar: { left: 'prev,next', center: 'title', right: '' },
+        eventDidMount: function(info){
+            // Destaca os eventos de "Agenda Fechada"
+            if(info.event.title === 'Agenda Fechada'){
+                info.el.style.backgroundColor = '#ef4444';
+                info.el.style.color = 'white';
+                info.el.style.fontWeight = '700';
+                info.el.style.textAlign = 'center';
             }
-
-            atualizarBotao();
-
         }
+    });
+    window.calendarioMini.render();
 
-        function atualizarBotao() {
+    carregarDisponibilidade(); // busca do banco
+});
 
-            const btn = document.getElementById("proximo");
-
-            if (servicosSelecionados.length > 0) {
-
-                btn.classList.add("pronto");
-
-                btn.onclick = () => {
-
-                    irParaEtapa(2);
-
-                }
-
-            }
-
-        }
-
-        function irParaEtapa(numero) {
-
-            document.getElementById("etapa1").classList.add("oculto");
-            document.getElementById("etapa2").classList.add("oculto");
-            document.getElementById("etapa3").classList.add("oculto");
-
-            document.getElementById("etapa" + numero).classList.remove("oculto");
-
-        }
-
-        function desenharCalendario() {
-
-            const calendario = document.getElementById("calendario");
-            calendario.innerHTML = "";
-
-            document.getElementById("nomeMes").innerText =
-                meses[data.getMonth()] + " " + data.getFullYear();
-
-            const primeiroDia = new Date(data.getFullYear(), data.getMonth(), 1).getDay();
-            const totalDias = new Date(data.getFullYear(), data.getMonth() + 1, 0).getDate();
-
-            for (let i = 0; i < primeiroDia; i++) {
-
-                const vazio = document.createElement("div");
-                vazio.className = "dia vazio";
-                calendario.appendChild(vazio);
-
-            }
-
-            for (let d = 1; d <= totalDias; d++) {
-
-                const dia = document.createElement("div");
-                dia.className = "dia";
-                dia.innerText = d;
-
-                dia.onclick = () => selecionarDia(dia, d);
-
-                calendario.appendChild(dia);
-
-            }
-
-        }
-
-        function selecionarDia(div, d) {
-
-            document.querySelectorAll(".dia")
-                .forEach(el => el.classList.remove("marcado"));
-
-            div.classList.add("marcado");
-
-            dataSelecionada = d;
-
-            mostrarHorarios();
-
-        }
-
-        function mostrarHorarios() {
-
-            const horas = document.getElementById("horas");
-            horas.innerHTML = "";
-
-            const lista = [
-                "09:00", "10:00", "11:00",
-                "13:00", "14:00", "15:00",
-                "16:00", "17:00"
-            ];
-
-            lista.forEach(h => {
-
-                const div = document.createElement("div");
-                div.className = "hora";
-                div.innerText = h;
-
-                div.onclick = () => selecionarHora(div, h);
-
-                horas.appendChild(div);
-
-            });
-
-        }
-
-        function selecionarHora(div, h) {
-
-            document.querySelectorAll(".hora")
-                .forEach(el => el.classList.remove("marcado"));
-
-            div.classList.add("marcado");
-
-            horaSelecionada = h;
-
-        }
-
-        function mudarMes(valor) {
-
-            data.setMonth(data.getMonth() + valor);
-            desenharCalendario();
-
-        }
-
-        function voltar() {
-            document.getElementById("etapa2").classList.add("oculto");
-            document.getElementById("etapa1").classList.remove("oculto");
-        }
-
-        function mostrarResumo() {
-
-            const container = document.getElementById("resumo-servicos");
-            const totalEl = document.getElementById("total-agendamento");
-
-            container.innerHTML = "";
-
-            let total = 0;
-
-            servicosSelecionados.forEach(serv => {
-
-                const div = document.createElement("div");
-
-                div.style.display = "flex";
-                div.style.justifyContent = "space-between";
-                div.style.marginBottom = "8px";
-
-                div.innerHTML = `
-            <span>${serv.nome}</span>
-            <span>R$ ${serv.preco}</span>
-        `;
-
-                container.appendChild(div);
-
-                total += serv.preco;
-
-            });
-
-            totalEl.innerText = "R$ " + total;
-
-            document.getElementById("resumo-data").innerText =
-                dataSelecionada + " de " + meses[data.getMonth()];
-
-            document.getElementById("resumo-hora").innerText =
-                horaSelecionada;
-
-            irParaEtapa(3);
-
-        }
-
-        const checkbox = document.getElementById("aceite-termos");
-        const btn = document.getElementById("btn-confirmar-final");
-
+    const checkbox = document.getElementById("aceite-termos");
+    if (checkbox) {
         checkbox.addEventListener("change", () => {
+            const btn = document.getElementById("btn-confirmar-final");
+            if (checkbox.checked) btn.classList.add("pronto");
+            else btn.classList.remove("pronto");
+        });
+    }
 
-            if (checkbox.checked) {
-                btn.classList.add("pronto");
-            } else {
-                btn.classList.remove("pronto");
+    function carregarDisponibilidade(mes = null, ano = null) {
+    // usa os filtros se não vierem
+    if(!mes) mes = document.getElementById('filtroMes').value;
+    if(!ano) ano = document.getElementById('filtroAno').value;
+
+    fetch(`backend/buscar_disponibilidade.php?mes=${mes}&ano=${ano}`)
+    .then(r => r.json())
+    .then(data => {
+        const eventos = data.map(d => {
+            if(d.liberado == 1){ // horário liberado
+                return { 
+                    title: `${d.inicio} - ${d.fim}`,
+                    start: d.data,
+                    allDay: false
+                };
+            } else { // bloqueado
+                return {
+                    title: 'Agenda Fechada',
+                    start: d.data,
+                    allDay: true,
+                    color: '#ef4444'
+                };
             }
-
         });
 
-        function mostrarNotificacao() {
+        // Limpa e adiciona os eventos
+        window.calendarioMini.removeAllEvents();
+        window.calendarioMini.addEventSource(eventos);
+    });
 
-            const n = document.getElementById("notificacao");
+}
 
-            n.classList.remove("oculto");
-
-            setTimeout(() => {
-                n.classList.add("oculto");
-            }, 3000);
-
-        }
-
-        function confirmarAgendamento() {
-
-            const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
-
-            if (!usuario) {
-                alert("Você precisa estar logado para agendar");
-                return;
-            }
-
-            let agendamento = {
-
-                usuarioId: usuario.id,
-                servicos: servicosSelecionados,
-                data: document.getElementById("resumo-data").innerText,
-                hora: document.getElementById("resumo-hora").innerText,
-                total: document.getElementById("total-agendamento").innerText
-
-            };
-
-            fetch("/api/agendamentos", {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify(agendamento)
-
-            });
-
-            mostrarNotificacao();
-
-        }
-
-        function carregarAgendamento() {
-
-            const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
-
-            if (!usuario) return;
-
-            fetch("/api/agendamentos/" + usuario.id)
-
-                .then(res => res.json())
-
-                .then(agendamento => {
-
-                    if (!agendamento) return;
-
-                    const container = document.getElementById("meu-agendamento");
-
-                    if (!container) return;
-
-                    container.innerHTML = `
-                    
-                        <h3>Seu Agendamento</h3>
-
-                        <p><b>Serviços:</b> ${agendamento.servicos.map(s => s.nome).join(", ")}</p>
-
-                        <p><b>Data:</b> ${agendamento.data}</p>
-
-                        <p><b>Horário:</b> ${agendamento.hora}</p>
-
-                        <p><b>Total:</b> ${agendamento.total}</p>
-                        `;
-
-                    container.classList.remove("oculto");
-
-                });
-
-        }
-
-        carregarAgendamento();
-
-        document.addEventListener("DOMContentLoaded", iniciar);
-    </script>
+    // Chamadas de Teste/API
+    fetch("api/buscar_disponibilidade.php").then(r => r.json()).then(d => console.log(d));
+</script>
 </body>
 
 </html>
