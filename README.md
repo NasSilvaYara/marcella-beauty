@@ -79,7 +79,7 @@ Para a correta replicação do ambiente de desenvolvimento e execução do siste
 Direcione o terminal para o diretório `htdocs` do seu servidor local (XAMPP) e execute o comando de clonagem:
 
 ```bash
-git clone https://github.com/NasSilvaYara/marcella_nails.git
+git clone https://github.com/NasSilvaYara/marcella_MasterDesign.git
 ```
 
 ### 2. Configuração do Ambiente de Dados
@@ -91,7 +91,7 @@ Localize o arquivo de conexão e insira as credenciais do seu servidor local:
 $host = "localhost";
 $user = "root";
 $pass = "";
-$db   = "marcella_db";
+$db   = "marcella_beauty";
 ```
 
 ### 3. Importação do Schema SQL
@@ -99,7 +99,7 @@ $db   = "marcella_db";
 Acesse o **phpMyAdmin**, crie um banco de dados e importe o arquivo contido na pasta:
 
 ```bash
-/database/marcella_nails.sql
+/database/marcella_beauty.sql
 ```
 
 ### 4. Inicialização do Sistema
@@ -107,7 +107,7 @@ Acesse o **phpMyAdmin**, crie um banco de dados e importe o arquivo contido na p
 Certifique-se de que os módulos **Apache** e **MySQL** do **XAMPP** estejam ativos e acesse:
 
 ```bash
-http://localhost/marcella_nails
+http://localhost/marcella_beauty
 ```
 
 <p align="center">
