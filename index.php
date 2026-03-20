@@ -339,12 +339,12 @@ $logado = isset($_SESSION['usuario_id']);
 
         /* Card de Agendamento */
         :root {
-
+            
             --agendador-gradient: linear-gradient(
                 225deg, 
                 #FFA461 0%, 
                 #FD987E 30%, 
-                #FD9585 55%, 
+                #FD9585 61%, 
                 #FAA7D5 97%
             );
             --cor-branco: #ffffff;
