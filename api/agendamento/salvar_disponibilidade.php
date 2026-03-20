@@ -1,80 +1,50 @@
 <?php
+header("Content-Type: application/json");
 
-header('Content-Type: application/json');
-
+// conexão com banco
 $conn = new mysqli("localhost", "root", "", "marcella_beauty");
 
 if ($conn->connect_error) {
-    echo json_encode(['erro' => 'Erro de conexão']);
+    echo json_encode(["sucesso" => false, "erro" => "Erro conexão"]);
     exit;
 }
 
-$data = json_decode(file_get_contents('php://input'), true);
+// pega JSON
+$data = json_decode(file_get_contents("php://input"), true);
 
-if (!$data) {
-    echo json_encode(['erro' => 'Dados inválidos']);
-    exit;
-}
-
-$tipo = $data['tipo'];
-$dias = $data['dias'];
+$diasSemana = $data['dias'];
 $inicio = $data['inicio'];
 $fim = $data['fim'];
-$mes = intval($data['mes']);
-$ano = intval($data['ano']);
+$mes = $data['mes'];
+$ano = $data['ano'];
 
-$sucesso = true;
+// limpa agenda do mês (opcional, mas recomendado)
+$conn->query("DELETE FROM agenda WHERE MONTH(data) = $mes AND YEAR(data) = $ano");
 
-foreach ($dias as $dia) {
+// percorre o mês
+for ($dia = 1; $dia <= 31; $dia++) {
 
-    // verificar se já existe regra
-    $sql = "SELECT id FROM disponibilidade 
-            WHERE dia_semana=? AND tipo=? AND mes=? AND ano=?";
+    if (!checkdate($mes, $dia, $ano)) continue;
 
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssii", $dia, $tipo, $mes, $ano);
-    $stmt->execute();
+    $dataFormatada = sprintf("%04d-%02d-%02d", $ano, $mes, $dia);
+    $diaSemanaNumero = date('w', strtotime($dataFormatada)); // 0=domingo
 
-    $res = $stmt->get_result();
+    if (in_array($diaSemanaNumero, $diasSemana)) {
 
-    if ($res->num_rows > 0) {
+        $horaAtual = strtotime($inicio);
+        $horaFim = strtotime($fim);
 
-        $row = $res->fetch_assoc();
+        while ($horaAtual < $horaFim) {
 
-        // atualizar
-        $sql = "UPDATE disponibilidade 
-                SET hora_inicio=?, hora_fim=? 
-                WHERE id=?";
+            $hora = date("H:i:s", $horaAtual);
 
-        $upd = $conn->prepare($sql);
-        $upd->bind_param("ssi", $inicio, $fim, $row['id']);
+            $stmt = $conn->prepare("INSERT INTO agenda (data, hora) VALUES (?, ?)");
+            $stmt->bind_param("ss", $dataFormatada, $hora);
+            $stmt->execute();
 
-        if (!$upd->execute()) {
-            $sucesso = false;
+            $horaAtual = strtotime("+1 hour", $horaAtual);
         }
-
-    } else {
-
-        // inserir
-        $sql = "INSERT INTO disponibilidade 
-                (tipo, dia_semana, hora_inicio, hora_fim, mes, ano) 
-                VALUES (?,?,?,?,?,?)";
-
-        $ins = $conn->prepare($sql);
-        $ins->bind_param("ssssii", $tipo, $dia, $inicio, $fim, $mes, $ano);
-
-        if (!$ins->execute()) {
-            $sucesso = false;
-        }
-
     }
-
 }
 
-echo json_encode(
-    $sucesso
-        ? ['sucesso' => true]
-        : ['erro' => 'Falha ao salvar']
-);
-
-?>
+echo json_encode(["sucesso" => true]);
