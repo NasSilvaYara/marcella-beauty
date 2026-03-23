@@ -1,3 +1,22 @@
+/*
+===========================================================
+ARQUIVO: auth/login_google.php
+
+PROPÓSITO:
+Autenticar usuário usando Google Sign‑In com token.
+
+FUNCIONALIDADE:
+- Recebe JSON com id_token da Google API.
+- Faz fetch em endpoint do Google para validar token.
+- Se token válido, recupera o email + nome do usuário.
+- Guarda dados do usuário na sessão:
+  $_SESSION['usuario_id'], $_SESSION['usuario_nome'],
+  $_SESSION['usuario_email'].
+- Retorna JSON { success: true } para o front.
+- Em caso de falha, retorna success:false com mensagem.
+===========================================================
+*/
+
 <?php
 session_start();
 

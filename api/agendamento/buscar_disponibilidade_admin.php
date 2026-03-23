@@ -1,3 +1,32 @@
+/*
+===========================================================
+ARQUIVO: buscar_disponibilidade_admin.php
+
+FUNÇÃO:
+Retornar a configuração de disponibilidade criada pelo admin.
+
+COMO FUNCIONA:
+- Busca registros da tabela "disponibilidade"
+- Retorna dias configurados como:
+    - trabalho
+    - folga
+
+RETORNO:
+Lista de objetos com:
+- tipo (trabalho/folga)
+- dia
+- horário início/fim
+
+USO:
+- Alimenta o calendário do painel admin
+- Permite visualizar dias abertos/fechados
+
+OBS:
+Não calcula horários disponíveis.
+Apenas mostra regras cadastradas.
+===========================================================
+*/
+
 <?php
 
 header('Content-Type: application/json');

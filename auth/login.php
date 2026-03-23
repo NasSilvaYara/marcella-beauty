@@ -1,3 +1,26 @@
+/*
+===========================================================
+ARQUIVO: login.php
+
+PROPÓSITO:
+Autenticar usuário por e‑mail e senha.
+
+FUNCIONALIDADE:
+- Recebe POST com email e senha.
+- Faz SELECT na tabela "usuarios" para encontrar o
+  usuário correspondente.
+- Se encontrado, verifica a senha usando
+  password_verify().
+- Se válido, inicia sessão com:
+  $_SESSION['usuario_id'], $_SESSION['usuario_nome'],
+  $_SESSION['usuario_email'].
+- Redireciona para a página principal após login.
+
+SEGURANÇA:
+Usa hashing com password_verify, sessão para manter
+usuário autenticado.
+===========================================================
+*/
 <?php
 
 session_start();
@@ -28,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 
                 $_SESSION['usuario_id'] = $user['id'];
                 $_SESSION['usuario_nome'] = $user['nome'];
-                $_SESSION['usuario_email'] = $usuario['email'];
+                $_SESSION['usuario_email'] = $email;
 
             } else {
                 echo "<script>alert('Palavra-passe incorreta.'); window.history.back();</script>";

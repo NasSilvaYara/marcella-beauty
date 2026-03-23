@@ -21,6 +21,20 @@ $logado = isset($_SESSION['usuario_id']);
         rel="stylesheet">
 
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --color-1: #FFA461;
+            --color-2: #FD987E;
+            --color-3: #FD9585;
+            --color-4: #FAA7D5;
+            --text-dark: #333333;
+            --color-accent: #FC8C9B;
+            --bg-light: #fdfdfd;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -30,226 +44,282 @@ $logado = isset($_SESSION['usuario_id']);
 
         body {
             font-family: 'Montserrat', sans-serif;
-            color: #3b2166;
-            background-color: #FDF7FC;
-        }
-
-        .site-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
+            color: var(--text-dark);
+            background-color: #ffffff;
             overflow-x: hidden;
         }
 
         /* ============================================================
-           CSS - NAVEGAÇÃO (NAV)
+           HEADER & NAVIGATION (COM BLUR)
            ============================================================ */
+        .header-wrapper {
+            background: linear-gradient(to right, var(--color-1), var(--color-2), var(--color-3), var(--color-4));
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            /* Transição suave para o branco na base */
+            mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+        }
+
         .nav-principal {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 5%;
-            background: rgba(255, 255, 255, 0.31);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(25px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            position: sticky;
+            padding: 20px 8%;
+            width: 100%;
+            position: fixed;
             top: 0;
-            z-index: 100;
-        }
-
-        .header-wrapper {
-            background: linear-gradient(135deg, #9B86FF 0%, #FF86F8 100%);
-            position: relative;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+            left: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .links-institucionais {
             display: flex;
-            gap: clamp(12px, 2vw, 25px);
-        }
-
-        .acoes-usuario {
-            display: flex;
+            gap: 25px;
             align-items: center;
-            gap: clamp(15px, 2.5vw, 35px);
-            padding-left: 40px;
-            border-left: 1px solid rgba(59, 33, 102, 0.15);
         }
 
         .nav-link {
-            font-size: 10px;
-            font-weight: 600;
-            color: #3b2166;
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffffff;
             text-transform: uppercase;
             text-decoration: none;
             letter-spacing: 1.5px;
             transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .nav-link:hover {
-            color: #d946ef;
-            transform: translateY(-1px);
-        }
-
-        .login-icon {
-            width: 14px;
-            height: 14px;
-            stroke: currentColor;
-            stroke-width: 2.5;
-            fill: none;
+            opacity: 0.7;
         }
 
         .botao-agendar {
-            background: linear-gradient(90deg, #8c77d8, #e07ddd);
-            color: white;
-            padding: 10px 28px;
+            background: #ffffff;
+            color: var(--color-2);
+            padding: 10px 25px;
             border-radius: 50px;
-            font-size: 10px;
-            font-weight: 700;
+            font-size: 11px;
+            font-weight: 800;
             text-transform: uppercase;
             border: none;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(157, 133, 247, 0.4);
-            flex-shrink: 0;
-            transition: all 0.3s;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
-        /* Estilos Novos para Usuário Logado */
-        .user-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .user-greeting {
-            font-weight: 800;
-            font-size: 11px;
-            color: #3b2166;
-        }
-
-        .btn-logout {
-            font-size: 9px;
-            color: #000000;
-            text-decoration: none;
-            font-weight: bold;
-            margin-top: 2px;
+        .botao-agendar:hover {
+            transform: scale(1.05);
+            background: var(--text-dark);
+            color: #fff;
         }
 
         /* ============================================================
-           CSS - SEÇÕES
+           HERO SECTION
+           ============================================================ */
+        #inicio {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 100px 8% 0;
+            position: relative;
+        }
+
+        .conteudo-hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .texto-principal {
+            flex: 0 0 70%;
+            padding-bottom: 20px;
+            margin-top: -20px;
+        }
+
+        .tagline {
+            color: #000000;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 2px;
+            opacity: 0.9;
+        }
+
+        .nome-imagem-logo {
+            max-width: 850px;
+            width: 100%;
+            height: auto;
+            display: block;
+            margin-left: -15px;
+            margin-bottom: 40px;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.1));
+        }
+
+        .descricao-hero {
+            color: #111111dc;
+            font-size: 15px;
+            line-height: 1.8;
+            max-width: 420px;
+            font-weight: 400;
+            opacity: 0.95;
+            max-width: 800px;
+        }
+
+        /* Espaço para a Foto da Pessoa (Direita) */
+        .container-foto {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .foto-recortada {
+            max-width: 100%;
+            height: auto;
+            max-height: 80vh;
+            display: block;
+            object-fit: contain;
+            filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.15));
+            margin-bottom: -2px;
+        }
+
+        /* ============================================================
+           SEÇÕES GENÉRICAS (RESULTADOS, LOCALIZAÇÃO, CONTATOS)
            ============================================================ */
         section {
-            min-height: 100vh;
-            width: 100%;
-            padding: 80px 10%;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            padding: 100px 8%;
         }
 
         .section-title {
             font-family: 'Playfair Display', serif;
             font-size: clamp(32px, 5vw, 48px);
-            margin-bottom: 20px;
-            color: #3b2166;
-        }
-
-        /* Seção Inicio*/
-
-        #inicio {
-            flex: 1;
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 50px;
             position: relative;
-            min-height: 0;
-            padding: 0 10%;
-            display: flex;
-            align-items: center;
+            font-weight: 300 !important;
+            font-style: normal;
         }
 
-        #inicio::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to top, rgba(253, 247, 252, 1) 0%, rgba(253, 247, 252, 0.09) 100%);
-            z-index: 1;
-            pointer-events: none;
+        .section-title b {
+            font-weight: 700 !important;
         }
 
-        .conteudo-hero {
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 2px;
+            /* Reduzi um pouco a espessura da linha também */
+            background: linear-gradient(to right, var(--color-1), var(--color-4));
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+        #resultados {
+            background-color: #ffffff;
+        }
+
+        #localizacao {
+            background-color: var(--bg-light);
+        }
+
+        #contatos {
+            background-color: #ffffff;
+        }
+
+        /* ============================================================
+           SEÇÃO BOAS VINDAS (BRANCA)
+           ============================================================ */
+
+        .secao-boas-vindas {
+            background: #fff;
+            padding: 80px 8% 100px;
+            text-align: center;
             position: relative;
             z-index: 5;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
+            margin-top: -50px;
         }
 
-        .texto-principal {
-            flex: 1;
-            max-width: 600px;
+        .titulo-boas-vindas {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(26px, 5vw, 40px);
+            color: #222;
+            margin-bottom: 30px;
+            /* FORÇANDO O PESO MAIS FINO TAMBÉM AQUI */
+            font-weight: 300 !important;
         }
 
-        .tagline {
-            color: #3b2166;
-            font-size: 10px;
+        .titulo-boas-vindas b {
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            opacity: 0.8;
         }
 
-        .nome-marcella {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(45px, 6.5vw, 95px);
-            color: #3b2166;
-            line-height: 0.85;
-            margin: 0;
-            letter-spacing: -2px;
+        .highlight-text {
+            color: var(--color-accent);
         }
 
-        .subtitulo-beauty {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(22px, 3.5vw, 48px);
-            color: #3b2166;
-            margin-top: 15px;
-            font-weight: 400;
+        .texto-apoio {
+            max-width: 900px;
+            margin: 0 auto;
+            color: #555;
+            font-size: 17px;
+            line-height: 1.8;
         }
 
-        .descricao-bio {
-            color: #444;
-            font-size: 15px;
-            line-height: 1.6;
-            margin-top: 40px;
-            max-width: 380px;
+        /* ============================================================
+           RESPONSIVIDADE
+           ============================================================ */
+        @media (max-width: 992px) {
+            .header-wrapper {
+                mask-image: none;
+                min-height: auto;
+            }
+
+            #inicio {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 120px;
+                padding-bottom: 0;
+            }
+
+            .texto-principal {
+                padding-bottom: 50px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .container-foto {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .foto-recortada {
+                max-height: 60vh;
+            }
+
+            .links-institucionais {
+                display: none;
+            }
         }
 
-        .container-foto {
-            flex: 1;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
 
-        .foto-recortada {
-            max-height: 90vh;
-            max-width: 100%;
-            width: auto;
-            object-fit: contain;
-            filter: drop-shadow(10px 10px 30px rgba(0, 0, 0, 0.08));
-        }
-
+        /* ============================================================
+           MODAL LOGIN (ESTILIZADO)
+           ============================================================ */
         .modal-login {
             display: none;
             position: fixed;
@@ -257,35 +327,48 @@ $logado = isset($_SESSION['usuario_id']);
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 200;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 2000;
+            /* Acima do nav */
             align-items: center;
             justify-content: center;
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
 
         .caixa-login {
-            background: white;
-            padding: 40px;
+            background: #ffffff;
+            padding: 50px 40px;
             border-radius: 30px;
             width: 90%;
-            max-width: 400px;
+            max-width: 420px;
             text-align: center;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
             position: relative;
-            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
 
-        .escondido {
-            display: none;
+        .caixa-login h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 30px;
+            color: var(--text-dark);
+        }
+
+        .caixa-login h3 b {
+            font-weight: 700;
+            color: var(--color-2);
+            position: relative;
         }
 
         .input-login {
             width: 100%;
-            padding: 16px;
-            margin-bottom: 12px;
-            border: 1px solid #eee;
-            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 15px;
+            border: 1px solid #f0f0f0;
+            background: #fafafa;
+            border-radius: 15px;
             outline: none;
             font-family: 'Montserrat', sans-serif;
             font-size: 14px;
@@ -293,18 +376,74 @@ $logado = isset($_SESSION['usuario_id']);
         }
 
         .input-login:focus {
-            border-color: #9B86FF;
-            box-shadow: 0 0 0 4px rgba(155, 134, 255, 0.1);
+            border-color: var(--color-2);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(253, 152, 126, 0.1);
+        }
+
+        .acoes-usuario {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-greeting {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .btn-logout {
+            background: #FD9585;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-block;
+            transition: 0.3s;
+        }
+
+        .btn-logout:hover {
+            opacity: 0.85;
+        }
+
+        .botao-acao-modal {
+            width: 100%;
+            padding: 16px;
+            border-radius: 15px;
+            border: none;
+            background: linear-gradient(to right, var(--color-1), var(--color-3));
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .botao-acao-modal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(253, 152, 126, 0.3);
         }
 
         .divisor-modal {
             display: flex;
             align-items: center;
-            margin: 25px 0;
-            color: #aaa;
-            font-size: 12px;
+            margin: 30px 0;
+            color: #ccc;
+            font-size: 10px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
         }
 
         .divisor-modal::before,
@@ -320,104 +459,380 @@ $logado = isset($_SESSION['usuario_id']);
         }
 
         .link-toggle {
-            color: #9B86FF;
+            color: var(--color-2);
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .link-toggle:hover {
+            color: var(--color-1);
+        }
+
+        .fechar-modal {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            transition: 0.3s;
+        }
+
+        .fechar-modal:hover {
+            color: var(--text-dark);
+        }
+
+        .escondido {
+            display: none;
         }
 
         .alerta-erro {
-            background: #fee2e2;
-            color: #b91c1c;
-            padding: 10px;
-            border-radius: 8px;
+            background: #fff5f5;
+            color: #e53e3e;
+            padding: 12px;
+            border-radius: 10px;
             font-size: 12px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #fed7d7;
+        }
+
+        .fechar-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .fechar-modal:hover {
+            color: #FD9585;
+            transform: scale(1.2);
+        }
+
+        .fechar-modal {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
         }
 
         /* Seção Serviços*/
 
         /* Card de Agendamento */
         :root {
-            
-            --agendador-gradient: linear-gradient(
-                225deg, 
-                #FFA461 0%, 
-                #FD987E 30%, 
-                #FD9585 61%, 
-                #FAA7D5 97%
-            );
+
+            --agendador-gradient: linear-gradient(225deg,
+                    #ffa361e7 0%,
+                    #fd977eea 15%,
+                    #fd9585e8 50%,
+                    #FAA7D5 97%);
             --cor-branco: #ffffff;
             --cor-texto: #333333;
             --raio-borda: 25px;
         }
 
-        /* Container Principal */
+        /* =======================================
+   AGENDADOR – Estilo Visual Premium
+   ======================================= */
+
+        /* 1. Fundo do agendador (gradiente vertical) */
         .agendador {
-            width: 100%;
-            max-width: 420px;
+            background: linear-gradient(180deg,
+                    #ff9e67 0%,
+                    #fd8a8a 50%,
+                    #f9a1d0 100%);
+
+            /* gradiente suave criador pelo CSS */
+            :contentReference[oaicite:0] {
+                index=0
+            }
+
+            border-radius: 30px;
+
+            /* cantos arredondados grandes */
+            :contentReference[oaicite:1] {
+                index=1
+            }
+
+            padding: 30px;
+            /* espaço interno */
+            color: white;
+            max-width: 550px;
             margin: 20px auto;
-            border-radius: var(--raio-borda);
-            overflow: hidden;
-            position: relative;
-            font-family: 'Segoe UI', sans-serif;
-            transition: all 0.4s ease;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+            font-family: 'Segoe UI',
+            sans-serif;
         }
 
-        /* Estados Visuais (Gradiente vs Branco) */
-        .agendador.tema-colorido {
-            background: var(--agendador-gradient);
-            color: var(--cor-branco);
-            box-shadow: 0 15px 35px rgba(253, 152, 126, 0.3);
-        }
-
-        .agendador.tema-branco {
-            background: var(--cor-branco);
-            color: var(--cor-texto);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            padding: 2px;
-        }
-
-        .agendador.tema-branco::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: var(--raio-borda);
-            padding: 3px; 
-            background: var(--agendador-gradient);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: destination-out;
-            mask-composite: exclude;
-            pointer-events: none;
-        }
-
-        /* Estrutura Interna */
-        .topo {
-            padding: 35px 25px 15px;
-            text-align: center;
+        /* 2. Cabeçalho do agendador */
+        .agendador .topo {
+            font-size: 1.5rem;
             font-weight: 800;
-            font-size: 1.1rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            text-align: center;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            color: white;
         }
 
-        .corpo {
-            padding: 0 25px 20px;
+        .agendador .subtitulo {
+            display: block;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            opacity: 0.8;
+            text-align: center;
+            margin-bottom: 22px;
+            color: white;
         }
 
-        .base {
-            padding: 20px 25px 30px;
-            display: flex;
-            justify-content: center;
-        }
-
-        /* Filtros e Listas */
-        .filtros {
+        #categorias {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
             justify-content: center;
+            gap: 12px 10px;
             margin-bottom: 20px;
+        }
+
+        /* Container de subcategorias */
+        #subcategorias {
+            display: flex;
+            flex-wrap: wrap;
+            /* Permite quebra de linha */
+            justify-content: center;
+            /* Centraliza itens em cada linha */
+            gap: 8px 10px;
+            /* Menor espaçamento entre subcategorias */
+            margin-bottom: 18px;
+        }
+
+        /* Subcategoria padrão (menor que categorias) */
+        #subcategorias .item {
+            padding: 6px 12px;
+            /* Padding menor para reduzir tamanho geral */
+            border-radius: 30px;
+            /* Continua arredondado estilo pílula */
+            border: 1px solid #fff;
+            /* Borda branca fina */
+            background: transparent;
+            color: #fff;
+            font-size: 0.85rem;
+            /* Fonte um pouco menor */
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            /* Transição suave para hover */
+        }
+
+        /* Hover nas Subcategorias */
+        #subcategorias .item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.04);
+            /* Leve destaque visual ao passar o mouse */
+        }
+
+        /* Subcategoria ativa */
+        #subcategorias .item.ativo {
+            background: #fff;
+            /* Fundo branco no ativo */
+            color: #fd8a8a;
+            /* Texto rosa/coral para contraste */
+            border: none;
+            font-weight: 700;
+        }
+
+        .filtros .item {
+            padding: 8px 14px;
+            border-radius: 30px;
+
+            :contentReference[oaicite:2] {
+                index=2
+            }
+
+            border: 1.5px solid #fff;
+            background: transparent;
+            color: #fff;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .filtros .item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .filtros .item.ativo {
+            background: #fff;
+            /* botão ativo branco */
+            border: none;
+            color: #fd8a8a;
+            /* contraste com o gradiente */
+            font-weight: 700;
+        }
+
+
+        /* 4. Lista de serviços – card interno */
+        .lista .servico {
+            background: rgba(255, 255, 255, 0.51);
+            /* leve opacidade */
+            border-radius: 15px;
+            padding: 12px 16px;
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.25s ease;
+            color: #333;
+        }
+
+        .lista .servico:hover {
+            background: #fff;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+        }
+
+        .servico.eleito {
+            background-color: rgba(255, 255, 255, 0.97);
+        }
+
+        .lista .servico .nome {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .lista .servico .tempo {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .lista .servico .preco {
+            font-weight: 700;
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* 5. Botão CTA – Próximo / Confirmar */
+        .agendador .botao {
+            width: 100%;
+            padding: 16px;
+            border-radius: 15px;
+            background: #fff;
+            color: #fd8a8a;
+            text-transform: uppercase;
+            font-weight: 800;
+            font-size: 1rem;
+            border: none;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .agendador .botao:hover {
+            background: #fafafa;
+            transform: scale(1.02);
+        }
+
+        /* ===== RESUMO DE SERVIÇOS ===== */
+        /* ===== RESUMO DE SERVIÇOS ===== */
+        .resumo-selecionados {
+            background: #fff;
+            /* fundo branco para destacar */
+            border-radius: 12px;
+            /* bordas arredondadas */
+            border: 1px solid rgba(0, 0, 0, 0.10);
+            /* borda suave para conter o bloco */
+            padding: 10px 15px;
+            /* espaçamento interno */
+            margin: 20px auto;
+            /* separa do conteúdo acima */
+            font-size: 0.9rem;
+            /* fonte confortável */
+            max-width: 420px;
+            /* largura parecida com o agendador */
+            box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.08);
+            /* sombra leve */
+        }
+
+        /* Título do resumo */
+        .resumo-selecionados h4 {
+            margin: 0 0 8px 0;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+        }
+
+        /* Lista sem marcas e limpa */
+        #lista-selecionados {
+            list-style: none;
+
+            /* remove bullets padrão da <ul> */
+            :contentReference[oaicite:1] {
+                index=1
+            }
+
+            padding: 0;
+            margin: 0 0 10px 0;
+        }
+
+        /* Cada item */
+        #lista-selecionados li {
+            display: flex;
+            /* alinha nome + botão lado a lado */
+            justify-content: space-between;
+            align-items: center;
+            background: #fafafa;
+            /* fundo levemente contrastante */
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            border-radius: 8px;
+            /* cantos suavizados */
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* Botão de remover */
+        #lista-selecionados li button.remover {
+            background: transparent;
+            border: none;
+            color: #e74c3c;
+            /* vermelho para “X” */
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 6px;
+            line-height: 1;
+            transition: color 0.2s;
+            /* suave no hover */
+        }
+
+        #lista-selecionados li button.remover:hover {
+            color: #c0392b;
+        }
+
+        /* Texto de total */
+        #total-geral {
+            font-weight: 700;
+            text-align: right;
+            color: #222;
+        }
+
+        /* Ajustes opcionais para responsividade */
+        @media (max-width: 600px) {
+            .agendador {
+                padding: 20px;
+            }
+
+            .filtros .item {
+                padding: 7px 12px;
+                font-size: 0.85rem;
+            }
         }
 
         .lista {
@@ -494,7 +909,9 @@ $logado = isset($_SESSION['usuario_id']);
             color: var(--cor-branco);
         }
 
-        .oculto { display: none !important; }
+        .oculto {
+            display: none !important;
+        }
 
         .notificacao {
             position: absolute;
@@ -570,7 +987,7 @@ $logado = isset($_SESSION['usuario_id']);
                         </a>
                     <?php endif; ?>
 
-                    <button class="botao-agendar">Agendar</button>
+                    <a href="#container-principal" class="botao-agendar">Agendar</a>
                 </div>
 
             </nav>
@@ -585,8 +1002,9 @@ $logado = isset($_SESSION['usuario_id']);
                     <!-- Vista de Login -->
                     <div id="containerLogin" class="vista-login <?php echo $logado ? 'escondido' : ''; ?>">
                         <h3
-                            style="margin-bottom: 25px; font-family: 'Playfair Display', serif; font-size: 26px; color: #3b2166;">
+                            style="margin-bottom: 25px; font-family: 'Playfair Display', serif; font-size: 26px; color: #000;">
                             Bem-vinda de volta</h3>
+                        <button class="fechar-modal" onclick="fecharLogin()">✕</button>
                         <form id="formLogin" method="POST" action="auth/login.php">
                             <input type="email" name="email" class="input-login" placeholder="E-mail" required>
                             <input type="password" name="senha" class="input-login" placeholder="Palavra-passe"
@@ -613,8 +1031,9 @@ $logado = isset($_SESSION['usuario_id']);
                     <!-- Vista de Registro Corrigida -->
                     <div id="containerRegistro" class="vista-registro escondido">
                         <h3
-                            style="margin-bottom: 25px; font-family: 'Playfair Display', serif; font-size: 26px; color: #3b2166;">
+                            style="margin-bottom: 25px; font-family: 'Playfair Display', serif; font-size: 26px; color: #000;">
                             Criar a sua conta</h3>
+                        <button class="fechar-modal" onclick="fecharLogin()">✕</button>
                         <form action="registro.php" method="POST">
                             <input type="text" name="nome_completo" class="input-login" placeholder="Nome Completo"
                                 required>
@@ -634,24 +1053,36 @@ $logado = isset($_SESSION['usuario_id']);
                 <div class="conteudo-hero">
                     <div class="texto-principal">
                         <p class="tagline">Bem-vinda ao seu momento</p>
-                        <h1 class="nome-marcella">MARCELLA</h1>
-                        <h1 class="nome-marcella" style="padding-left: 8%;">GONÇALVES</h1>
-                        <h2 class="subtitulo-beauty">Beauty Expert & Educadora</h2>
-                        <p class="descricao-bio">
-                            Mais de 20 mil atendimentos e naturalidade com marca registrada.
+
+                        <img src="nomeLogo.png" alt="Logo Marcella Gonçalves" class="nome-imagem-logo">
+
+                        <p class="descricao-hero">
+                            Transformando olhares através da naturalidade. Mais de 20 mil atendimentos realizados com
+                            técnica exclusiva e personalizada.
                         </p>
                     </div>
+
                     <div class="container-foto">
                         <img src="fotoMarcella.png" alt="Marcella Gonçalves" class="foto-recortada">
                     </div>
-
-                    <div id="meu-agendamento" class="meu-agendamento oculto"></div>
                 </div>
             </section>
         </div>
 
+        <section class="secao-boas-vindas">
+            <h2 class="titulo-boas-vindas">
+                Bem-vinda ao Equilíbrio entre <b>Técnica</b> e <b>Bem-estar</b>.
+            </h2>
+            <p class="texto-apoio">
+                Acreditamos que a verdadeira estética não nasce apenas do talento, mas do respeito. Aqui, o atendimento
+                premium se traduz em zelo: protocolos de biossegurança rigorosos, produtos de alta performance e um
+                ambiente estruturado para o seu bem-estar. Para nós, cuidar da sua imagem é um compromisso técnico;
+                cuidar de você é a nossa missão.
+            </p>
+        </section>
+
         <section id="servicos">
-            <h2 class="section-title">SERVIÇOS</h2>
+            <h2 class="section-title">SERVIÇOS <b><em>EXCLUSIVOS</em></b></h2>
             <?php if (isset($_SESSION['usuario_id'])): ?>
                 <p>Olá
                     <?php echo htmlspecialchars($_SESSION['usuario_nome']); ?>, explore os nossos serviços exclusivos
@@ -663,144 +1094,174 @@ $logado = isset($_SESSION['usuario_id']);
 
             <div class="agendador tema-colorido" id="container-principal">
 
-            <div class="topo">AGENDE SEU HORARIO</div>
+                <div class="topo">AGENDE SEU HORARIO</div>
 
-            <!-- ETAPA 1 -->
-            <div id="etapa1">
-                <div class="corpo">
-                    <div class="filtros" id="categorias">
-                    </div>
-
-                    <div id="subcategorias" class="sub oculto"></div>
-
-                    <div class="lista" id="lista-servicos">
-                        <div style="background:rgba(255,255,255,0.1); padding:15px; border-radius:12px; display:flex; justify-content:space-between;">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="base">
-                    <button class="botao" id="proximo" onclick="irParaEtapa(2)">Próximo</button>
-                </div>
-            </div>
-
-            <!-- ETAPA 2 -->
-            <div id="etapa2" class="oculto">
-                <div class="corpo">
-                    <div class="mes">
-                        <span onclick="mudarMes(-1)" style="cursor:pointer;">❮</span>
-                        <span id="nomeMes"></span>
-                        <span onclick="mudarMes(1)" style="cursor:pointer;">❯</span>
-                    </div>
-
-                    <div class="agenda">
-                        <div class="calendario-container">
-                            <div class="dias-semana">
-                                <div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div><div>D</div>
-                            </div>
-                            <div class="grade" id="calendario">
-                            </div>
+                <!-- ETAPA 1 -->
+                <div id="etapa1">
+                    <div class="corpo">
+                        <div class="filtros" id="categorias">
                         </div>
 
-                        <div class="horarios">
-                            <div class="titulo-horarios">Horários</div>
-                            <div id="horas">
+                        <div id="subcategorias" class="sub oculto"></div>
+
+                        <div class="lista" id="lista-servicos">
+                            <div
+                                style="background:rgba(255,255,255,0.1); padding:15px; border-radius:12px; display:flex; justify-content:space-between;">
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="base" style="display:flex; gap:10px; align-items:center;">
-                    <button onclick="voltar()"
-                        style="background:none; border:none; color:inherit; cursor:pointer; font-weight:700; font-size:10px; text-transform:uppercase; opacity:0.7;">
-                        Voltar
-                    </button>
-                    <button class="botao pronto" onclick="mostrarResumo()">Confirmar</button>
-                </div>
-            </div>
+                    <div id="resumo-selecionados" class="resumo-selecionados oculto">
+                        <h4>Serviços Selecionados:</h4>
+                        <ul id="lista-selecionados"></ul>
+                        <div id="total-geral">Total: R$ 0</div>
+                    </div>
 
-            <!-- ETAPA 3 -->
-            <div id="etapa3" class="oculto">
-                <div class="corpo">
-                    <div class="resumo-container">
-                        <div class="resumo-titulo" style="font-weight:bold; margin-bottom:15px;">
-                            Confirmar Dados do Agendamento
-                        </div>
-                        <div id="resumo-servicos" style="margin-bottom:10px; font-size:14px;">Corte Clássico - R$ 50,00</div>
-                        <div class="resumo-info" style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px;">
-                            <span>Data</span>
-                            <span id="resumo-data"></span>
-                        </div>
-                        <div class="resumo-info" style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:15px;">
-                            <span>Horário</span>
-                            <span id="resumo-hora"></span>
-                        </div>
-                        <div class="resumo-total" style="border-top:1px dashed #ddd; padding-top:10px; display:flex; justify-content:space-between; font-weight:bold; color:#FD9585; font-size:18px;">
-                            <span>Total</span>
-                            <span id="total-agendamento">R$ 0</span>
-                        </div>
+                    <div class="base">
+                        <button class="botao" id="proximo" onclick="irParaEtapa(2)">Próximo</button>
                     </div>
                 </div>
 
-                <div class="base">
-                    <button onclick="irParaEtapa(2)" style="background:none; border:none; color:#aaa; cursor:pointer; font-weight:700; font-size:10px; text-transform:uppercase; margin-right:15px;">
-                        Voltar
-                    </button>
-                    <button class="botao pronto" onclick="irParaEtapa(4)">Continuar</button>
-                </div>
-            </div>
+                <!-- ETAPA 2 -->
+                <div id="etapa2" class="oculto">
+                    <div class="corpo">
+                        <div class="mes">
+                            <span onclick="mudarMes(-1)" style="cursor:pointer;">❮</span>
+                            <span id="nomeMes"></span>
+                            <span onclick="mudarMes(1)" style="cursor:pointer;">❯</span>
+                        </div>
 
-            <!-- ETAPA 4 -->
-            <div id="etapa4" class="oculto">
-                <div class="corpo">
-                    <div class="confirmacao-container">
-                        <h4 class="subtitulo-confirmacao" style="font-size:11px; color:#888; margin-bottom:10px;">SEUS DADOS</h4>
-                        <input type="text" placeholder="Nome Completo" class="campo-confirmacao">
-                        <input type="text" placeholder="Whatsapp" class="campo-confirmacao">
+                        <div class="agenda">
+                            <div class="calendario-container">
+                                <div class="dias-semana">
+                                    <div>S</div>
+                                    <div>T</div>
+                                    <div>Q</div>
+                                    <div>Q</div>
+                                    <div>S</div>
+                                    <div>S</div>
+                                    <div>D</div>
+                                </div>
+                                <div class="grade" id="calendario">
+                                </div>
+                            </div>
 
-                        <h4 class="subtitulo-confirmacao" style="font-size:11px; color:#888; margin-top:15px; margin-bottom:5px;">
-                            Termos de Compromisso Mútuo
-                        </h4>
-                        <ol class="termos">
-                            <li>Aviso com antecedência o desmarque ou remarque de horário.</li>
-                            <li>Informe exatamente quais procedimentos você deseja realizar.</li>
-                            <li>Informe exatamente quais procedimentos você deseja realizar.</li>
-                            <li>Evite trazer acompanhantes, exceto situações especiais.</li>
-                            <li>Evite o uso constante de celular durante o atendimento.</li>
-                            <li>Tolerância de atraso 10 minutos.</li>
-                        </ol>
+                            <div class="horarios">
+                                <div class="titulo-horarios">Horários</div>
+                                <div id="horas">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                        <label class="checkbox-termo" style="font-size:11px; display:flex; align-items:center; gap:8px;">
-                            <input type="checkbox" id="aceite-termos">
-                            Eu concordo com as regras
-                        </label>
+                    <div class="base" style="display:flex; gap:10px; align-items:center;">
+                        <button onclick="voltar()"
+                            style="background:none; border:none; color:inherit; cursor:pointer; font-weight:700; font-size:10px; text-transform:uppercase; opacity:0.7;">
+                            Voltar
+                        </button>
+                        <button class="botao pronto" onclick="mostrarResumo()">Confirmar</button>
                     </div>
                 </div>
 
-                <div class="base">
-                    <button onclick="irParaEtapa(3)" style="background:none; border:none; color:#aaa; cursor:pointer; font-weight:700; font-size:10px; text-transform:uppercase; margin-right:15px;">
-                        Voltar
-                    </button>
-                    <button class="botao" onclick="confirmarAgendamento()">Confirmar Agendamento</button>
+                <!-- ETAPA 3 -->
+                <div id="etapa3" class="oculto">
+                    <div class="corpo">
+                        <div class="resumo-container">
+                            <div class="resumo-titulo" style="font-weight:bold; margin-bottom:15px;">
+                                Confirmar Dados do Agendamento
+                            </div>
+                            <div id="resumo-servicos" style="margin-bottom:10px; font-size:14px;">Corte Clássico - R$
+                                50,00</div>
+                            <div class="resumo-info"
+                                style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px;">
+                                <span>Data</span>
+                                <span id="resumo-data"></span>
+                            </div>
+                            <div class="resumo-info"
+                                style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:15px;">
+                                <span>Horário</span>
+                                <span id="resumo-hora"></span>
+                            </div>
+                            <div class="resumo-total"
+                                style="border-top:1px dashed #ddd; padding-top:10px; display:flex; justify-content:space-between; font-weight:bold; color:#FD9585; font-size:18px;">
+                                <span>Total</span>
+                                <span id="total-agendamento">R$ 0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="base">
+                        <button onclick="irParaEtapa(2)"
+                            style="background:none; border:none; color:#aaa; cursor:pointer; font-weight:700; font-size:10px; text-transform:uppercase; margin-right:15px;">
+                            Voltar
+                        </button>
+                        <button class="botao pronto" onclick="irParaEtapa(4)">Continuar</button>
+                    </div>
+                </div>
+
+                <!-- ETAPA 4 -->
+                <div id="etapa4" class="oculto">
+                    <div class="corpo">
+                        <div class="confirmacao-container">
+                            <h4 class="subtitulo-confirmacao" style="font-size:11px; color:#888; margin-bottom:10px;">
+                                SEUS DADOS</h4>
+
+                            <form id="form-agendamento" method="POST" action="salvar_agendamento.php">
+
+                                <input type="text" name="nome" placeholder="Nome Completo" class="campo-confirmacao">
+                                <input type="text" name="whatsapp" placeholder="Whatsapp" class="campo-confirmacao">
+
+                                <h4 class="subtitulo-confirmacao"
+                                    style="font-size:11px; color:#888; margin-top:15px; margin-bottom:5px;">
+                                    Termos de Compromisso Mútuo
+                                </h4>
+                                <ol class="termos">
+                                    <li>Aviso com antecedência o desmarque ou remarque de horário.</li>
+                                    <li>Informe exatamente quais procedimentos você deseja realizar.</li>
+                                    <li>Informe exatamente quais procedimentos você deseja realizar.</li>
+                                    <li>Evite trazer acompanhantes, exceto situações especiais.</li>
+                                    <li>Evite o uso constante de celular durante o atendimento.</li>
+                                    <li>Tolerância de atraso 10 minutos.</li>
+                                </ol>
+
+                                <label class="checkbox-termo"
+                                    style="font-size:11px; display:flex; align-items:center; gap:8px;">
+                                    <input type="checkbox" id="aceite-termos" name="termos" required>
+                                    Eu concordo com as regras
+                                </label>
+
+
+                                <button type="submit" class="botao">Confirmar Agendamento</button>
+
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="base">
+                        <button onclick="irParaEtapa(3)"
+                            style="background:none; border:none; color:#aaa; cursor:pointer; font-weight:700; font-size:10px; text-transform:uppercase; margin-right:15px;">
+                            Voltar
+                        </button>
+                        <button class="botao" onclick="confirmarAgendamento()">Confirmar Agendamento</button>
+                    </div>
+                </div>
+
+                <div id="notificacao" class="notificacao oculto">
+                    Agendamento confirmado com sucesso!
                 </div>
             </div>
-
-            <div id="notificacao" class="notificacao oculto">
-                Agendamento confirmado com sucesso!
-            </div>
-        </div>
         </section>
 
         <section id="resultados">
-            <h2 class="section-title">Resultados</h2>
+            <h2 class="section-title">NOSSOS <b><em>RESULTADOS</em></b></h2>
         </section>
 
-        <section id="localização">
-            <h2 class="section-title">Localização</h2>
+        <section id="localizacao">
+            <h2 class="section-title"><b><em>VISITE - NOS</em></b></h2>
         </section>
 
         <section id="contatos">
-            <h2 class="section-title">Contatos</h2>
+            <h2 class="section-title">Onde a beleza encontra o <b><em class="highlight-text">CUIDADO</em></b></h2>
         </section>
 
 
@@ -809,34 +1270,34 @@ $logado = isset($_SESSION['usuario_id']);
     <script>
 
         // Inicialização e Listeners
-        document.addEventListener('DOMContentLoaded', function () {
-            const elementoCalendario = document.getElementById('calendarioMini');
 
-            window.calendarioMini = new FullCalendar.Calendar(elementoCalendario, {
-                initialView: 'dayGridMonth',
-                locale: 'pt-br',
-                height: 380,
-                headerToolbar: { left: 'prev,next', center: 'title', right: '' },
-                eventDidMount: function (info) {
-                    // Destaca os eventos de "Agenda Fechada"
-                    if (info.event.title === 'Agenda Fechada') {
-                        info.el.style.backgroundColor = '#ef4444';
-                        info.el.style.color = 'white';
-                        info.el.style.fontWeight = '700';
-                        info.el.style.textAlign = 'center';
-                    }
-                }
-            });
-            window.calendarioMini.render();
+        document.addEventListener("DOMContentLoaded", function () {
 
-            carregarDisponibilidade();
-            iniciar();
+            desenharCategorias();
+
+            selecionarPrimeiraCategoria();
+
+            carregarAgendamento();
+
+            const elementoCalendario = document.getElementById("calendarioMini");
+            if (elementoCalendario) {
+                window.calendarioMini = new FullCalendar.Calendar(elementoCalendario, {
+                    initialView: "dayGridMonth",
+                    locale: "pt-br",
+                    height: 380
+                });
+                window.calendarioMini.render();
+            }
         });
 
         const checkbox = document.getElementById("aceite-termos");
         if (checkbox) {
             checkbox.addEventListener("change", () => {
-                const btn = document.getElementById("btn-confirmar-final");
+                const btn = document.querySelector(".botao");
+                if (btn) {
+                    if (checkbox.checked) btn.classList.add("pronto");
+                    else btn.classList.remove("pronto");
+                }
                 if (checkbox.checked) btn.classList.add("pronto");
                 else btn.classList.remove("pronto");
             });
@@ -853,7 +1314,7 @@ $logado = isset($_SESSION['usuario_id']);
         }
 
         function handleCredentialResponse(response) {
-            fetch("auth/login_google.php", {
+            fetch("/auth/login_google.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id_token: response.credential })
@@ -863,6 +1324,45 @@ $logado = isset($_SESSION['usuario_id']);
                     if (data.success) window.location.href = "index.php";
                     else alert("Erro: " + data.message);
                 });
+        }
+
+        async function carregarHorariosDisponiveis(dataEscolhida) {
+
+            const container = document.getElementById("horas");
+            container.innerHTML = "Carregando...";
+
+            try {
+
+                const duracaoTotal = calcularDuracaoTotal();
+
+                const res = await fetch(`/api/agendamento/buscar_horarios_disponiveis.php?data=${dataEscolhida}&duracao=${duracaoTotal}`);
+                const horarios = await res.json();
+
+                if (horarios.length === 0) {
+                    container.innerHTML = "<p class='texto-vazio'>Sem horários disponíveis</p>";
+                    return;
+                }
+
+                container.innerHTML = "";
+
+                horarios.forEach(h => {
+                    const div = document.createElement("div");
+                    div.className = "item-horario";
+                    div.innerText = h;
+
+                    div.onclick = () => {
+                        selectedTimeValue = h;
+                        document.querySelectorAll(".item-horario").forEach(el => el.classList.remove("selecionado"));
+                        div.classList.add("selecionado");
+                    };
+
+                    container.appendChild(div);
+                });
+
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = "Erro ao carregar horários";
+            }
         }
 
         const dados = {
@@ -944,7 +1444,6 @@ $logado = isset($_SESSION['usuario_id']);
 
         function iniciar() {
             desenharCategorias();
-            carregarAgendaDoBanco();
             carregarAgendamento(); // Função que carrega agendamentos do localStorage
         }
 
@@ -953,20 +1452,35 @@ $logado = isset($_SESSION['usuario_id']);
             if (!div) return;
             div.innerHTML = "";
 
-            for (let chave in dados) {
+            Object.entries(dados).forEach(([chave, valor]) => {
                 const btn = document.createElement("div");
                 btn.className = "item";
-                btn.innerText = dados[chave].nome;
+                btn.innerText = valor.nome;
                 btn.onclick = () => selecionarCategoria(chave, btn);
                 div.appendChild(btn);
+            });
+        }
+
+
+        function selecionarPrimeiraCategoria() {
+            const btns = document.querySelectorAll("#categorias .item");
+            if (btns.length > 0) {
+                btns[0].click(); // simula o clique no primeiro botão
             }
         }
 
         function selecionarCategoria(chave, botao) {
             categoriaAtual = chave;
-            subAtual = null;
-            document.querySelectorAll(".item").forEach(el => el.classList.remove("ativo"));
+
+            document.querySelectorAll("#categorias .item").forEach(el => el.classList.remove("ativo"));
+
             botao.classList.add("ativo");
+            if (dados[chave].filtro) {
+                subAtual = Object.keys(dados[chave].subs)[0];
+            } else {
+                subAtual = null;
+            }
+
             mostrarSubcategorias();
             mostrarServicos();
         }
@@ -974,28 +1488,53 @@ $logado = isset($_SESSION['usuario_id']);
         function mostrarSubcategorias() {
             const div = document.getElementById("subcategorias");
             div.innerHTML = "";
+
             const cat = dados[categoriaAtual];
-            if (!cat.filtro) { div.style.display = "none"; return; }
-            div.style.display = "flex";
-            for (let sub in cat.subs) {
+            if (!cat.filtro) {
+                div.classList.add("oculto");
+                return;
+            }
+
+            div.classList.remove("oculto");
+
+            // Garante que a primeira subcategoria seja ativada
+            let keys = Object.keys(cat.subs);
+
+            keys.forEach((subKey, index) => {
                 const btn = document.createElement("div");
                 btn.className = "item";
-                btn.innerText = cat.subs[sub].nome;
+                btn.innerText = cat.subs[subKey].nome;
+
+                // Marca automaticamente como ativo se for a selecionada
+                if (subKey === subAtual) {
+                    btn.classList.add("ativo");
+                }
+
                 btn.onclick = () => {
-                    subAtual = sub;
+                    subAtual = subKey;
                     document.querySelectorAll("#subcategorias .item").forEach(el => el.classList.remove("ativo"));
                     btn.classList.add("ativo");
                     mostrarServicos();
                 };
-                div.appendChild(btn);
-            }
-        }
 
+                div.appendChild(btn);
+            });
+        }
         function mostrarServicos() {
             const div = document.getElementById("lista-servicos");
-            div.innerHTML = "";
+            div.innerHTML = ""; // Limpa antes de adicionar
             if (!categoriaAtual) return;
-            let lista = dados[categoriaAtual].filtro ? (subAtual ? dados[categoriaAtual].subs[subAtual].servicos : []) : dados[categoriaAtual].servicos;
+
+            let lista = [];
+
+            if (dados[categoriaAtual].filtro) {
+                if (subAtual) {
+                    lista = dados[categoriaAtual].subs[subAtual].servicos;
+                }
+            } else {
+                lista = dados[categoriaAtual].servicos;
+            }
+
             lista.forEach(serv => {
                 const item = document.createElement("div");
                 item.className = "servico";
@@ -1005,25 +1544,71 @@ $logado = isset($_SESSION['usuario_id']);
             });
         }
 
+        function atualizarResumoSelecionados() {
+            const lista = document.getElementById("lista-selecionados");
+            const box = document.getElementById("resumo-selecionados");
+            const totalEl = document.getElementById("total-geral");
+
+            // Se não tiver nada selecionado, esconde o resumo
+            if (servicosSelecionados.length === 0) {
+                box.classList.add("oculto");
+                return;
+            }
+
+            // Mostra o resumo
+            box.classList.remove("oculto");
+            lista.innerHTML = "";
+
+            let total = 0;
+            servicosSelecionados.forEach((serv, index) => {
+                const li = document.createElement("li");
+                const removerBtn = `<button class="remover" onclick="removerServico(${index})">×</button>`;
+                li.innerHTML = `${serv.nome} - R$ ${serv.preco} ${removerBtn}`;
+                lista.appendChild(li);
+                total += serv.preco;
+            });
+
+            totalEl.innerText = `Total: R$ ${total}`;
+        }
+
+        function removerServico(index) {
+            servicosSelecionados.splice(index, 1);  // remove do array
+            document.querySelectorAll(".servico")[index].classList.remove("eleito"); // desmarca visualmente
+            atualizarResumoSelecionados();  // atualiza a interface
+            atualizarBotao();                // atualiza o botão
+        }
         /**
          * LÓGICA DE TEMPO E AGENDAMENTO
          */
+
         function selecionarServico(div, serv) {
-            if (div.classList.contains("eleito")) {
+            // Verifica se já está selecionado
+            const index = servicosSelecionados.findIndex(s => s.nome === serv.nome);
+
+            if (index > -1) {
+                // Já estava no array → remove (deseleciona)
+                servicosSelecionados.splice(index, 1);
                 div.classList.remove("eleito");
-                servicosSelecionados = servicosSelecionados.filter(s => s.nome !== serv.nome);
             } else {
-                div.classList.add("eleito");
+                // Adiciona ao array (seleciona)
                 servicosSelecionados.push(serv);
+                div.classList.add("eleito");
             }
-            atualizarBotao();
+
+            atualizarResumoSelecionados();
+            atualizarBotao(); // Atualiza botão “Próximo”
         }
 
         function atualizarBotao() {
             const btn = document.getElementById("proximo");
+            if (!btn) return;
+
             if (servicosSelecionados.length > 0) {
                 btn.classList.add("pronto");
-                btn.onclick = () => irParaEtapa(2);
+                btn.disabled = false; // Habilita se houver algum selecionado
+            } else {
+                btn.classList.remove("pronto");
+                btn.disabled = true;  // Desabilita se nada selecionado
             }
         }
 
@@ -1031,7 +1616,10 @@ $logado = isset($_SESSION['usuario_id']);
             document.getElementById("etapa1").classList.add("oculto");
             document.getElementById("etapa2").classList.add("oculto");
             document.getElementById("etapa3").classList.add("oculto");
+            document.getElementById("etapa4").classList.add("oculto"); // 👈 faltava isso
+
             document.getElementById("etapa" + numero).classList.remove("oculto");
+
             if (numero === 3) mostrarResumo();
         }
 
@@ -1074,19 +1662,19 @@ $logado = isset($_SESSION['usuario_id']);
          * FINALIZAÇÃO E NOTIFICAÇÃO
          */
         function confirmarAgendamento() {
-            const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+            const nome = document.querySelector('input[name="nome"]').value;
+            const whatsapp = document.querySelector('input[name="whatsapp"]').value;
             if (!usuario) { alert("Você precisa estar logado!"); return; }
-
             const dadosParaEnviar = {
-                cliente_nome: usuario.nome,
+                cliente_nome: nome,
+                whatsapp: whatsapp,
                 data: selectedFullDate,
                 hora_inicio: selectedTimeValue,
                 duracao: calcularDuracaoTotal(),
                 servicos: servicosSelecionados.map(s => s.nome),
                 valor_total: calcularTotal()
             };
-
-            fetch("backend/salvar_agendamento.php", {
+            fetch("/api/agendamento/salvar_agendamento.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(dadosParaEnviar)
@@ -1136,11 +1724,14 @@ $logado = isset($_SESSION['usuario_id']);
         async function carregarAgendaDoBanco() {
             const mesAtual = viewDate.getMonth() + 1;
             const anoAtual = viewDate.getFullYear();
+
             try {
-                const resposta = await fetch(`get_agenda.php?mes=${mesAtual}&ano=${anoAtual}`)};
+                const resposta = await fetch(`/api/agendamento/get_agenda.php?mes=${mesAtual}&ano=${anoAtual}`);
                 agendaVindaDoBanco = await resposta.json();
                 renderCalendar();
-            } catch (erro) { console.error("Erro ao carregar agenda:", erro); }
+            } catch (erro) {
+                console.error("Erro ao carregar agenda:", erro);
+            }
         }
 
         function renderCalendar() {
@@ -1161,17 +1752,44 @@ $logado = isset($_SESSION['usuario_id']);
 
                 const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
 
-                const temAgenda = agendaVindaDoBanco[dateKey];
+                const horariosOcupados = agendaVindaDoBanco[dateKey];
 
-                if (!temAgenda) {
+                if (!horariosOcupados) {
+                    // Não tem nenhum agendamento → ainda pode estar disponível
+                    el.classList.add('dia-disponivel');
+
+                    el.onclick = () => {
+                        selectedFullDate = dateKey;
+                        renderCalendar();
+                        carregarHorariosDisponiveis(dateKey);
+                    };
+
+                } else {
+                    // Tem agendamento → ainda pode ter vagas
+                    el.classList.add('dia-disponivel');
+
+                    el.onclick = () => {
+                        selectedFullDate = dateKey;
+                        renderCalendar();
+                        carregarHorariosDisponiveis(dateKey);
+                    };
+                }
+
+                const info = agendaVindaDoBanco[dateKey];
+
+                if (!info || !info.ativo) {
                     el.classList.add('dia-desativado');
+
+                } else if (info.lotado) {
+                    el.classList.add('dia-lotado');
+
                 } else {
                     el.classList.add('dia-disponivel');
 
                     el.onclick = () => {
                         selectedFullDate = dateKey;
                         renderCalendar();
-                        carregarHorariosDisponiveis(dateKey); // 🔥 ESSENCIAL
+                        carregarHorariosDisponiveis(dateKey);
                     };
                 }
 
@@ -1194,37 +1812,10 @@ $logado = isset($_SESSION['usuario_id']);
 
             try {
 
-                const disp = await fetch(`backend/buscar_disponibilidade_dia.php?data=${dataEscolhida}`);
-                const disponibilidade = await disp.json();
-
-                const ag = await fetch(`backend/buscar_agendamentos_dia.php?data=${dataEscolhida}`);
-                const ocupados = await ag.json();
+                const res = await fetch(`/api/agendamento/buscar_horarios_disponiveis.php?data=${dataEscolhida}`);
+                const horarios = await res.json();
 
                 let horariosValidos = [];
-
-                disponibilidade.forEach(d => {
-
-                    let inicio = converterParaMinutos(d.hora_inicio);
-                    let fim = converterParaMinutos(d.hora_fim);
-
-                    for (let h = inicio; h <= fim - duracaoTotal; h += 15) {
-
-                        let conflito = false;
-
-                        ocupados.forEach(o => {
-                            let oInicio = converterParaMinutos(o.hora_inicio);
-                            let oFim = oInicio + parseInt(o.duracao);
-
-                            if (h < oFim && (h + duracaoTotal) > oInicio) {
-                                conflito = true;
-                            }
-                        });
-
-                        if (!conflito) {
-                            horariosValidos.push(formatarHora(h));
-                        }
-                    }
-                });
 
                 if (horariosValidos.length === 0) {
                     container.innerHTML = "<p class='texto-vazio'>Sem horários disponíveis</p>";
@@ -1263,6 +1854,8 @@ $logado = isset($_SESSION['usuario_id']);
             const m = String(min % 60).padStart(2, "0");
             return `${h}:${m}`;
         }
+
+        window.mostrarServicos = mostrarServicos;
 
     </script>
 </body>
