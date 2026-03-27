@@ -23,291 +23,478 @@ require_once "../api/db.php";
 
     <style>
         :root {
-    /* Nova Paleta de Cores */
-    --color-1: #FFA461;
-    --color-2: #FD987E;
-    --color-3: #FD9585;
-    --color-4: #FAA7D5;
-    --gradiente: linear-gradient(90deg, var(--color-1), var(--color-2), var(--color-3), var(--color-4));
-    
-    --text-dark: #333333;
-    --text-soft: #666666;
-    --bg-light: #fdfdfd;
-    --branco: #ffffff;
-    --sombra: 0 10px 25px rgba(0, 0, 0, 0.05);
-    --raio-borda: 16px;
-    --perigo: #ff5f5f;
-    --sucesso: #2dd4bf;
-}
+            /* Nova Paleta de Cores */
+            --color-1: #FFA461;
+            --color-2: #FD987E;
+            --color-3: #FD9585;
+            --color-4: #FAA7D5;
+            --gradiente: linear-gradient(90deg, var(--color-1), var(--color-2), var(--color-3), var(--color-4));
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-}
+            --text-dark: #333333;
+            --text-soft: #666666;
+            --bg-light: #fdfdfd;
+            --branco: #ffffff;
+            --sombra: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --raio-borda: 16px;
+            --perigo: #ff5f5f;
+            --sucesso: #2dd4bf;
+        }
 
-body {
-    background-color: var(--bg-light);
-    color: var(--text-dark);
-    line-height: 1.6;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
-/* ===== CABEÇALHO ===== */
-.cabecalho-principal {
-    background-color: var(--branco);
-    padding: 1.2rem 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
 
-.cabecalho-principal h1 {
-    font-size: 1.2rem;
-    font-weight: 800;
-    background: var(--gradiente);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
+        /* ===== CABEÇALHO ===== */
+        .cabecalho-principal {
+            background-color: var(--branco);
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-.filtros-globais {
-    display: flex;
-    gap: 8px;
-    background: #f1f5f9;
-    padding: 5px;
-    border-radius: 12px;
-}
+        .cabecalho-principal h1 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--gradiente);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-.filtros-globais select {
-    border: none;
-    background: transparent;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--text-dark);
-    cursor: pointer;
-    padding: 5px 10px;
-    outline: none;
-}
+        .filtros-globais {
+            display: flex;
+            gap: 8px;
+            background: #f1f5f9;
+            padding: 5px;
+            border-radius: 12px;
+        }
 
-/* ===== CONTEÚDO E GRID ===== */
-.conteudo-principal {
-    width: 92%;
-    max-width: 1400px;
-    margin: 2rem auto;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-}
+        .filtros-globais select {
+            border: none;
+            background: transparent;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+            padding: 5px 10px;
+            outline: none;
+        }
 
-.layout-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-}
+        /* ===== CONTEÚDO E GRID ===== */
+        .conteudo-principal {
+            width: 92%;
+            max-width: 1400px;
+            margin: 2rem auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
 
-.cartao {
-    background-color: var(--branco);
-    padding: 2rem;
-    border-radius: var(--raio-borda);
-    box-shadow: var(--sombra);
-    border: 1px solid rgba(0,0,0,0.02);
-}
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
 
-.cartao h2 {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: var(--text-dark);
-    text-transform: uppercase;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+        /* Centraliza o conteúdo dentro do cartão */
+        .cartao {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Centraliza horizontalmente */
+            text-align: center;
+            /* Centraliza textos */
+            padding: 30px;
+        }
 
-.cartao h2::before {
-    content: '';
-    width: 4px;
-    height: 18px;
-    background: var(--gradiente);
-    border-radius: 10px;
-}
+        /* Garante que os grupos de entrada ocupem largura total ou centralizada */
+        .grupo-entrada {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+        }
 
-/* ===== MÉTRICAS ===== */
-.painel-metricas {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-}
+        /* Ajusta seletores de botões para ficarem no centro */
+        .seletor-tipo,
+        .seletor-modo,
+        .seletor-dia {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            width: 100%;
+        }
 
-.cartao-metricas {
-    background: var(--branco);
-    padding: 1.8rem;
-    border-radius: var(--raio-borda);
-    box-shadow: var(--sombra);
-    border-bottom: 4px solid var(--color-2);
-    transition: transform 0.3s ease;
-}
+        .cartao2 {
+            background-color: var(--branco);
+            padding: 2rem;
+            border-radius: var(--raio-borda);
+            box-shadow: var(--sombra);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
 
-.cartao-metricas:hover {
-    transform: translateY(-5px);
-}
+        .cartao h2 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-.valor-metricas {
-    font-size: 2rem;
-    font-weight: 800;
-    margin: 0.5rem 0;
-    color: var(--text-dark);
-}
+        .cartao h2::before {
+            content: '';
+            width: 4px;
+            height: 18px;
+            background: var(--gradiente);
+            border-radius: 10px;
+        }
 
-.descricao-metricas {
-    font-size: 0.8rem;
-    color: var(--text-soft);
-}
+        .cartao2 h2 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-/* ===== BOTÕES E INPUTS ===== */
-.botao-tipo {
-    flex: 1;
-    padding: 12px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    border: 1px solid #eee;
-    border-radius: 10px;
-    text-align: center;
-    cursor: pointer;
-    background: #f8fafc;
-    transition: 0.3s;
-}
+        .cartao2 h2::before {
+            content: '';
+            width: 4px;
+            height: 18px;
+            background: var(--gradiente);
+            border-radius: 10px;
+        }
 
-.botao-tipo.ativo.trabalho {
-    background: var(--sucesso);
-    color: white;
-    border-color: var(--sucesso);
-}
+        .seletor-tipo {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
 
-.botao-tipo.ativo.folga {
-    background: var(--perigo);
-    color: white;
-    border-color: var(--perigo);
-}
+        .botao-modo {
+            flex: 1;
+            padding: 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: 1px dashed #ccc;
+            border-radius: 10px;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: 0.2s;
+        }
 
-.botao-dia {
-    padding: 10px 14px;
-    border: 1px solid #eee;
-    border-radius: 10px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    cursor: pointer;
-    background: white;
-    transition: 0.2s;
-}
+        .botao-modo.ativo {
+            background: #334155;
+            color: white;
+            border: none;
+        }
 
-.botao-dia.ativo {
-    background: var(--gradiente);
-    color: white;
-    border: none;
-}
+        .seletor-modo {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
 
-input[type="time"] {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #eee;
-    background: #f8fafc;
-}
+        .legenda-input {
+            font-size: 0.7rem;
+            color: var(--text-soft);
+            margin-top: 4px;
+        }
 
-button#btnSalvar {
-    background: var(--gradiente);
-    color: white;
-    border: none;
-    padding: 16px;
-    border-radius: 12px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: opacity 0.3s;
-    margin-top: 20px;
-}
+        .input-padrao {
+            display: block;
+            width: 100%;
+            max-width: 320px;
+            padding: 14px 18px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #4a4a4a;
+            background-color: #ffffff;
+            /* Borda muito sutil e arredondamento maior */
+            border: 1px solid #ececec;
+            border-radius: 12px;
+            /* Sombra suave para dar profundidade */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+            transition: all 0.25s ease-in-out;
+            appearance: none;
+            /* Remove estilos padrão do sistema */
+            -webkit-appearance: none;
+        }
 
-/* ===== GRÁFICOS ===== */
-.grid-graficos {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-}
+        /* Quando o usuário clica no campo */
+        .input-padrao:focus {
+            outline: none;
+            border-color: #000;
+            /* Borda preta fina para um look premium */
+            background-color: #fff;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px);
+            /* Leve elevação */
+        }
 
-.botao-filtro {
-    padding: 8px 16px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    border: 1px solid #eee;
-    background: white;
-    color: var(--text-soft);
-    border-radius: 20px;
-    cursor: pointer;
-    transition: 0.3s;
-}
+        /* Estilizando o ícone do calendário para sumir com o visual "Windows" antigo */
+        .input-padrao::-webkit-calendar-picker-indicator {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>');
+            background-repeat: no-repeat;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            opacity: 0.6;
+        }
 
-.botao-filtro.ativo {
-    background: var(--gradiente);
-    color: white;
-    border: none;
-}
+        .input-padrao::-webkit-calendar-picker-indicator:hover {
+            opacity: 1;
+        }
 
-/* ===== CALENDÁRIO ===== */
-#calendarioMini {
-    border: none !important;
-}
+        .grid-horarios {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 8px;
+        }
 
-.fc .fc-toolbar-title {
-    font-size: 1.1rem !important;
-    color: var(--text-dark) !important;
-}
+        .label-hora {
+            font-size: 0.6rem;
+            color: var(--text-soft);
+            display: block;
+            margin-bottom: 4px;
+        }
 
-.fc .fc-button-primary {
-    background: #f1f5f9 !important;
-    border: none !important;
-    color: var(--text-dark) !important;
-    text-transform: capitalize !important;
-    font-weight: 600 !important;
-}
+        #bloco-resumo {
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
 
-.fc .fc-button-primary:not(:disabled).fc-button-active {
-    background: var(--color-2) !important;
-    color: white !important;
-}
+        #bloco-resumo strong {
+            font-size: 0.7rem;
+            color: var(--text-dark);
+            display: block;
+            margin-bottom: 5px;
+        }
 
-/* ===== RESPONSIVIDADE ===== */
-@media (max-width: 1024px) {
-    .layout-grid, .grid-graficos {
-        grid-template-columns: 1fr;
-    }
-    
-    .cabecalho-principal {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-    }
-}
+        #resumoTexto {
+            font-size: 0.75rem;
+            color: var(--text-soft);
+            white-space: pre-line;
+            line-height: 1.4;
+        }
 
-@media (max-width: 480px) {
-    .conteudo-principal {
-        width: 95%;
-    }
-    
-    .valor-metricas {
-        font-size: 1.5rem;
-    }
-    
-    .seletor-dia {
-        justify-content: center;
-    }
-}
+        #btnSalvarGeral {
+            background: var(--gradiente);
+            color: white;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        #btnSalvarGeral:hover {
+            opacity: 0.9;
+            transform: scale(1.01);
+        }
+
+        /* ===== MÉTRICAS ===== */
+        .painel-metricas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .cartao-metricas {
+            background: var(--branco);
+            padding: 1.8rem;
+            border-radius: var(--raio-borda);
+            box-shadow: var(--sombra);
+            border-bottom: 4px solid var(--color-2);
+            transition: transform 0.3s ease;
+        }
+
+        .cartao-metricas:hover {
+            transform: translateY(-5px);
+        }
+
+        .valor-metricas {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0.5rem 0;
+            color: var(--text-dark);
+        }
+
+        .descricao-metricas {
+            font-size: 0.8rem;
+            color: var(--text-soft);
+        }
+
+        /* ===== BOTÕES E INPUTS ===== */
+        .botao-tipo {
+            flex: 1;
+            padding: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            background: #f8fafc;
+            transition: 0.3s;
+        }
+
+        .botao-tipo.ativo.trabalho {
+            background: var(--sucesso);
+            color: white;
+            border-color: var(--sucesso);
+        }
+
+        .botao-tipo.ativo.folga {
+            background: var(--perigo);
+            color: white;
+            border-color: var(--perigo);
+        }
+
+        .botao-dia {
+            padding: 10px 14px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            background: white;
+            transition: 0.2s;
+        }
+
+        .botao-dia.ativo {
+            background: var(--gradiente);
+            color: white;
+            border: none;
+        }
+
+        input[type="time"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            background: #f8fafc;
+        }
+
+        button#btnSalvar {
+            background: var(--gradiente);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            margin-top: 20px;
+        }
+
+        /* ===== GRÁFICOS ===== */
+        .grid-graficos {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .botao-filtro {
+            padding: 8px 16px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: 1px solid #eee;
+            background: white;
+            color: var(--text-soft);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .botao-filtro.ativo {
+            background: var(--gradiente);
+            color: white;
+            border: none;
+        }
+
+        /* ===== CALENDÁRIO ===== */
+        #calendarioMini {
+            border: none !important;
+        }
+
+        .fc .fc-toolbar-title {
+            font-size: 1.1rem !important;
+            color: var(--text-dark) !important;
+        }
+
+        .fc .fc-button-primary {
+            background: #f1f5f9 !important;
+            border: none !important;
+            color: var(--text-dark) !important;
+            text-transform: capitalize !important;
+            font-weight: 600 !important;
+        }
+
+        .fc .fc-button-primary:not(:disabled).fc-button-active {
+            background: var(--color-2) !important;
+            color: white !important;
+        }
+
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 1024px) {
+
+            .layout-grid,
+            .grid-graficos {
+                grid-template-columns: 1fr;
+            }
+
+            .cabecalho-principal {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .conteudo-principal {
+                width: 95%;
+            }
+
+            .valor-metricas {
+                font-size: 1.5rem;
+            }
+
+            .seletor-dia {
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 
@@ -343,11 +530,14 @@ button#btnSalvar {
     <div class="conteudo-principal">
 
         <div class="layout-grid">
+
             <div class="cartao">
                 <h2>Gerenciar Disponibilidade</h2>
 
+
                 <div class="grupo-entrada">
-                    <strong>Tipo de Regra</strong>
+                    <strong>O que deseja configurar?</strong>
+                    <p class="legenda-input">Escolha se o salão estará funcionando ou fechado.</p>
                     <div class="seletor-tipo">
                         <div class="botao-tipo ativo trabalho" data-tipo="trabalho" onclick="alternarTipo(this)">
                             Trabalho</div>
@@ -357,7 +547,30 @@ button#btnSalvar {
                 </div>
 
                 <div class="grupo-entrada">
-                    <strong>Dias da Semana</strong>
+                    <strong>Quando isso se aplica?</strong>
+                    <p class="legenda-input">
+                        Defina se isso vale para toda semana ou apenas um dia específico.
+                    </p>
+
+                    <div class="seletor-modo">
+                        <button class="botao-modo ativo" data-modo="padrao" onclick="alternarModo(this)">
+                            Toda semana
+                        </button>
+                        <button class="botao-modo" data-modo="excecao" onclick="alternarModo(this)">
+                            Dia específico
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grupo-entrada" id="container-data-especifica" style="display: none;">
+                    <strong>Data da Folga (Opcional)</strong>
+                    <input type="date" id="dataFolga" class="input-padrao">
+                    <p class="legenda-input">Muda um dia e hora específicos.</p>
+                </div>
+
+
+                <div class="grupo-entrada" id="container-dias-semana">
+                    <strong>Escala de Trabalho (Dias)</strong>
                     <div class="seletor-dia">
                         <button class="botao-dia" data-dia="segunda">Seg</button>
                         <button class="botao-dia" data-dia="terca">Ter</button>
@@ -370,51 +583,28 @@ button#btnSalvar {
                 </div>
 
                 <div class="grupo-entrada">
-                    <strong>Horário de Atendimento</strong>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <strong>Horário</strong>
+                    <div class="grid-horarios">
                         <div>
-                            <span
-                                style="font-size: 0.6rem; color: var(--texto-suave); display: block; margin-bottom: 4px;">INÍCIO</span>
-                            <input type="time" value="09:00">
+                            <span class="label-hora">INÍCIO</span>
+                            <input type="time" id="horaInicio" value="09:00">
                         </div>
                         <div>
-                            <span
-                                style="font-size: 0.6rem; color: var(--texto-suave); display: block; margin-bottom: 4px;">TÉRMINO</span>
-                            <input type="time" value="18:00">
+                            <span class="label-hora">TÉRMINO</span>
+                            <input type="time" id="horaFim" value="18:00">
                         </div>
                     </div>
                 </div>
 
-                <button style="background: var(--primaria); 
-                                color: white; 
-                                border: none; 
-                                padding: 14px; 
-                                width: 100%;
-                                border-radius: 8px; 
-                                font-weight: 700; 
-                                cursor: pointer; 
-                                margin-top: auto; 
-                                transition: 0.3s;
-                                " onmouseover="this.style.opacity='0.9'
-                                " onmouseout="this.style.opacity='1'">SALVAR CONFIGURAÇÕES</button>
+                <div id="bloco-resumo">
+                    <strong>RESUMO DA AGENDA</strong>
+                    <div id="resumoTexto">Selecione as opções...</div>
+                </div>
+
+                <button id="btnSalvarGeral" onclick="salvarConfiguracoes()">SALVAR E PUBLICAR NO SITE</button>
             </div>
 
-            <div id="notificacaoSalvo" style="
-                                            position: fixed;
-                                            bottom: 20px;
-                                            right: 20px;
-                                            background: #10b981;
-                                            color: white;
-                                            padding: 12px 18px;
-                                            border-radius: 8px;
-                                            font-weight: 600;
-                                            display: none;
-                                            z-index: 999;
-                                            ">
-                Configuração salva com sucesso
-            </div>
-
-            <div class="cartao">
+            <div class="cartao2">
                 <h2>Calendário Mensal</h2>
                 <p class="descricao-metricas">
                     Visualize todos os atendimentos agendados. É possível navegar por dia, semana ou mês para acompanhar
@@ -566,69 +756,87 @@ button#btnSalvar {
 
         });
 
+        
+       function gerarResumo() {
+    const tipo = document.querySelector('.botao-tipo.ativo')?.dataset.tipo;
+    const modo = document.querySelector('.botao-modo.ativo')?.dataset.modo;
+    const dias = Array.from(document.querySelectorAll('.botao-dia.ativo')).map(b => b.dataset.dia);
+    const horaInicio = document.getElementById('horaInicio')?.value;
+    const horaFim = document.getElementById('horaFim')?.value;
+    const dataPontual = document.getElementById('dataFolga')?.value;
+
+    if (!tipo || !modo) return;
+
+    let resumo = `Tipo: ${tipo.toUpperCase()}\n`;
+    resumo += `Modo: ${modo.toUpperCase()}\n`;
+
+    if (modo === 'excecao' && dataPontual) {
+        resumo += `Data: ${dataPontual}\n`;
+    }
+
+    if (dias.length > 0) resumo += `Dias: ${dias.join(', ')}\n`;
+
+    if (horaInicio && horaFim) resumo += `Horário: ${horaInicio} às ${horaFim}`;
+
+    document.getElementById('resumoTexto').innerText = resumo;
+}
+
         // ===== Salvar configurações =====
 
-        function salvarConfiguracoes() {
+function salvarConfiguracoes() {
+    const tipo = document.querySelector('.botao-tipo.ativo')?.dataset.tipo;
+    const modo = document.querySelector('.botao-modo.ativo')?.dataset.modo;
+    const diasSemana = Array.from(document.querySelectorAll('.botao-dia.ativo')).map(b => parseInt(b.dataset.dia));
+    const horaInicio = document.getElementById('horaInicio')?.value;
+    const horaFim = document.getElementById('horaFim')?.value;
+    const mes = parseInt(document.getElementById('filtroMes').value);
+    const ano = parseInt(document.getElementById('filtroAno').value);
+    const dataPontual = document.getElementById('dataFolga')?.value;
 
-            const tipo = document.querySelector(".botao-tipo.ativo").dataset.tipo;
+    if (!tipo || !modo) { alert("Selecione tipo e modo!"); return; }
+    if (modo === 'padrao' && diasSemana.length === 0) { alert("Selecione pelo menos um dia da semana!"); return; }
+    if (!horaInicio || !horaFim) { alert("Defina os horários de início e fim!"); return; }
 
-            const dias = [];
+    const dados = {
+        tipo,
+        modo,
+        dias: diasSemana,
+        inicio: horaInicio,
+        fim: horaFim,
+        mes,
+        ano,
+        dataPontual
+    };
 
-            document.querySelectorAll(".botao-dia.ativo").forEach(btn => {
-                dias.push(btn.dataset.dia);
-            });
+    console.log("Enviando dados:", dados);
 
-            if (dias.length === 0) {
-                alert("Selecione pelo menos um dia da semana");
-                return;
-            }
-
-            const inicio = document.querySelectorAll("input[type=time]")[0].value;
-            const fim = document.querySelectorAll("input[type=time]")[1].value;
-
-            const mes = document.getElementById("filtroMes").value;
-            const ano = document.getElementById("filtroAno").value;
-
-            fetch("../api/agendamento/salvar_disponibilidade.php", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    tipo,
-                    dias,
-                    inicio,
-                    fim,
-                    mes,
-                    ano
-                })
-            })
-                .then(res => res.json())
-                .then(res => {
-
-                    console.log(res);
-
-                    if (res.sucesso) {
-
-                        alert("Configuração salva!");
-
-                        carregarDisponibilidade(mes, ano);
-
-                    } else {
-
-                        alert("Erro: " + res.erro);
-
-                    }
-
-                })
-                .catch(err => {
-
-                    console.error(err);
-                    alert("Erro ao conectar com o servidor");
-
-                });
-
+    fetch("../api/agendamento/agenda_completa.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dados)
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("Resposta do servidor:", data);
+        if (data.sucesso) {
+            alert("Salvo com sucesso!");
+            mostrarNotificacaoSalvo();
+        } else {
+            alert(data.erro || "Erro ao salvar.");
         }
+    })
+    .catch(err => {
+        console.error("Erro na requisição:", err);
+        alert("Erro técnico ao salvar.");
+    });
+}
+
+// Atualiza resumo sempre que houver mudanças
+document.querySelectorAll('.botao-tipo, .botao-modo, .botao-dia, #horaInicio, #horaFim, #dataFolga')
+    .forEach(el => el.addEventListener('change', gerarResumo));
+
+document.querySelectorAll('.botao-tipo, .botao-modo, .botao-dia')
+    .forEach(el => el.addEventListener('click', gerarResumo));
 
         function mostrarNotificacaoSalvo() {
 
@@ -641,6 +849,7 @@ button#btnSalvar {
             }, 3000);
 
         }
+
         // ===== Funções de calendário =====
 
         let calendario;
@@ -648,19 +857,23 @@ button#btnSalvar {
             mes = mes || document.getElementById('filtroMes').value;
             ano = ano || document.getElementById('filtroAno').value;
 
+            if (dados.status === "fechado") {
+                document.getElementById("calendarioMini").innerHTML =
+                    "<p style='text-align:center;padding:20px;'>Agenda não liberada</p>";
+                return;
+            }
+
             fetch(`../api/agendamento/buscar_disponibilidade_admin.php?mes=${mes}&ano=${ano}`)
                 .then(res => res.json())
-                .then(dados => {
-                    const eventos = [];
-                    dados.forEach(item => {
-                        if (item.tipo === 'folga') eventos.push({ title: "Fechado", start: item.dia, allDay: true, color: "#ef4444" });
-                        else eventos.push({ title: `Disponível: ${item.inicio} - ${item.fim}`, start: item.dia, allDay: true, color: "#10b981" });
-                    });
-                    if (calendario) {
-                        calendario.removeAllEvents();
-                        calendario.addEventSource(eventos);
+                .then(data => {
+                    console.log("Resposta:", data);
+
+                    if (data.success) {
+                        mostrarNotificacaoSalvo();
+                    } else {
+                        alert(data.message || "Erro ao salvar");
                     }
-                });
+                })
         }
 
         function carregarFaturamento(mes, ano) {
@@ -722,10 +935,78 @@ button#btnSalvar {
         let graficoBarras;
 
         // ===== Funções de interface =====
-        function alternarTipo(btn) {
-            document.querySelectorAll('.botao-tipo').forEach(b => b.classList.remove('ativo'));
-            btn.classList.add('ativo');
+
+        function alternarModo(elemento) {
+            // 1. Remove classe 'ativo' de todos os botões de modo
+            document.querySelectorAll('.botao-modo').forEach(btn => btn.classList.remove('ativo'));
+
+            // 2. Adiciona 'ativo' ao clicado
+            elemento.classList.add('ativo');
+
+            const modo = elemento.getAttribute('data-modo');
+            const containerData = document.getElementById('container-data-especifica');
+            const containerDias = document.getElementById('container-dias-semana');
+
+            if (modo === 'excecao') {
+                // Se for dia específico, MOSTRA a data e ESCONDE os dias da semana
+                containerData.style.display = 'block';
+                containerDias.style.display = 'none';
+            } else {
+                // Se for toda semana, ESCONDE a data e MOSTRA os dias da semana
+                containerData.style.display = 'none';
+                containerDias.style.display = 'block';
+            }
+
+            atualizarResumo(); // Chame sua função de resumo se houver
         }
+
+        function alternarTipo(elemento) {
+            // Remove classe 'ativo' de todos os botões de tipo
+            document.querySelectorAll('.botao-tipo').forEach(btn => btn.classList.remove('ativo'));
+
+            // Adiciona 'ativo' ao clicado
+            elemento.classList.add('ativo');
+
+            const tipo = elemento.getAttribute('data-tipo');
+            const labelData = document.getElementById('label-data');
+
+            // Opcional: Muda o texto do label dependendo da escolha
+            if (labelData) {
+                labelData.innerText = tipo === 'trabalho' ? 'Data do Trabalho' : 'Data da Folga';
+            }
+
+            atualizarResumo();
+        }
+
+        function atualizarResumo() {
+            const tipo = document.querySelector('.botao-tipo.ativo').dataset.tipo;
+            const dias = Array.from(document.querySelectorAll('.botao-dia.ativo')).map(b => b.innerText);
+            const data = document.getElementById('dataFolga').value;
+            const inicio = document.getElementById('horaInicio').value;
+            const fim = document.getElementById('horaFim').value;
+
+            let resumo = "RESUMO DA CONFIGURAÇÃO\n\n";
+
+            resumo += `Tipo: ${tipo === 'trabalho' ? 'Trabalho' : 'Folga'}\n`;
+
+            if (data) {
+                resumo += `Data específica: ${data.split('-').reverse().join('/')}\n`;
+            }
+
+            if (dias.length > 0) {
+                resumo += `Dias: ${dias.join(', ')}\n`;
+            }
+
+            resumo += `Horário: ${inicio} às ${fim}`;
+
+            document.getElementById('resumoTexto').innerText = resumo;
+        }
+
+        // Ativa a atualização automática ao clicar ou digitar
+        document.querySelectorAll('.botao-dia, .botao-tipo, input').forEach(el => {
+            el.addEventListener('click', atualizarResumo);
+            el.addEventListener('change', atualizarResumo);
+        });
 
         // ===== Funções de gráficos =====
         function atualizarGraficoServico(categoria, evento) {

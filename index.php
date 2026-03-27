@@ -1,4 +1,11 @@
 <?php
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'secure' => false,
+    'httponly' => true,
+    'samesite' => 'Lax'
+]);
 session_start();
 require_once "config/db_config.php";
 
@@ -21,10 +28,9 @@ $logado = isset($_SESSION['usuario_id']);
         rel="stylesheet">
 
     <style>
-        html {
-            scroll-behavior: smooth;
-        }
-
+        /* ============================================================
+   1. CONFIGURAÇÕES GERAIS E VARIÁVEIS
+   ============================================================ */
         :root {
             --color-1: #FFA461;
             --color-2: #FD987E;
@@ -33,12 +39,20 @@ $logado = isset($_SESSION['usuario_id']);
             --text-dark: #333333;
             --color-accent: #FC8C9B;
             --bg-light: #fdfdfd;
+            --agendador-gradient: linear-gradient(225deg, #ffa361e7 0%, #fd977eea 15%, #fd9585e8 50%, #FAA7D5 97%);
+            --cor-branco: #ffffff;
+            --cor-texto: #333333;
+            --raio-borda: 25px;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        html {
             scroll-behavior: smooth;
         }
 
@@ -49,19 +63,23 @@ $logado = isset($_SESSION['usuario_id']);
             overflow-x: hidden;
         }
 
+        a {
+            text-decoration: none;
+        }
+
         /* ============================================================
-           HEADER & NAVIGATION (COM BLUR)
-           ============================================================ */
+   2. HEADER & NAVIGATION (NAV-PRINCIPAL)
+   ============================================================ */
         .header-wrapper {
             background: linear-gradient(to right, var(--color-1), var(--color-2), var(--color-3), var(--color-4));
             position: relative;
-            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            /* Transição suave para o branco na base */
-            mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+            min-height: 100dvh;
+            padding-top: 60px;
+            padding-bottom: 80px;
         }
+
 
         .nav-principal {
             display: flex;
@@ -90,7 +108,6 @@ $logado = isset($_SESSION['usuario_id']);
             font-weight: 700;
             color: #ffffff;
             text-transform: uppercase;
-            text-decoration: none;
             letter-spacing: 1.5px;
             transition: 0.3s;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -120,9 +137,130 @@ $logado = isset($_SESSION['usuario_id']);
             color: #fff;
         }
 
+        .nav-principal.nav-scroll {
+            background: #ffffff;
+            backdrop-filter: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-principal.nav-scroll .nav-link {
+            color: #333 !important;
+        }
+
+        .nav-principal.nav-scroll .user-greeting {
+            color: #333;
+        }
+
+        .nav-principal.nav-scroll .user-sub {
+            color: #777;
+        }
+
+        .nav-principal.nav-scroll .user-info {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-principal.nav-scroll .botao-agendar {
+            background: linear-gradient(135deg, #FD9585, #FAA7D5);
+            color: #fff;
+        }
+
+        .nav-principal.nav-scroll .btn-logout {
+            border: 1px solid #ddd;
+            color: #333;
+        }
+
+        .nav-principal.nav-scroll .btn-logout:hover {
+            background: #FD9585;
+            color: #fff;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 10px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FD9585, #FAA7D5);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .user-texto {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .user-greeting {
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .user-sub {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .btn-logout {
+            margin-left: 10px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: #fff;
+            color: #FD9585;
+        }
+
+        .acoes-usuario {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-adm a {
+            background: #ffffff;
+            color: var(--color-2);
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-adm a:hover {
+            transform: scale(1.05);
+            background: var(--text-dark);
+            color: #fff;
+        }
+
         /* ============================================================
-           HERO SECTION
-           ============================================================ */
+   3. HERO SECTION (#inicio)
+   ============================================================ */
         #inicio {
             flex: 1;
             display: flex;
@@ -137,7 +275,6 @@ $logado = isset($_SESSION['usuario_id']);
             justify-content: space-between;
             width: 100%;
             height: 100%;
-            position: relative;
         }
 
         .texto-principal {
@@ -146,18 +283,8 @@ $logado = isset($_SESSION['usuario_id']);
             margin-top: -20px;
         }
 
-        .tagline {
-            color: #000000;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 2px;
-            opacity: 0.9;
-        }
-
         .nome-imagem-logo {
-            max-width: 850px;
+            max-width: 700px;
             width: 100%;
             height: auto;
             display: block;
@@ -167,23 +294,23 @@ $logado = isset($_SESSION['usuario_id']);
         }
 
         .descricao-hero {
-            color: #111111dc;
-            font-size: 15px;
-            line-height: 1.8;
-            max-width: 420px;
-            font-weight: 400;
-            opacity: 0.95;
-            max-width: 800px;
+            color: #ffffff;
+            font-size: clamp(16px, 1.2vw, 19px);
+            line-height: 1.7;
+            font-weight: 600;
+
+            max-width: 520px;
+            margin-top: 15px;
+
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
         }
 
-        /* Espaço para a Foto da Pessoa (Direita) */
         .container-foto {
             flex: 1;
             display: flex;
             justify-content: flex-end;
             align-items: flex-end;
             height: 100%;
-            overflow: visible;
         }
 
         .foto-recortada {
@@ -196,55 +323,222 @@ $logado = isset($_SESSION['usuario_id']);
             margin-bottom: -2px;
         }
 
-        /* ============================================================
-           SEÇÕES GENÉRICAS (RESULTADOS, LOCALIZAÇÃO, CONTATOS)
-           ============================================================ */
-        section {
-            padding: 100px 8%;
-        }
-
-        .section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(32px, 5vw, 48px);
-            color: var(--text-dark);
-            text-align: center;
-            margin-bottom: 50px;
+        /* CONTAINER DA FOTO */
+        .container-foto {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             position: relative;
-            font-weight: 300 !important;
-            font-style: normal;
         }
 
-        .section-title b {
-            font-weight: 700 !important;
+        .aura-luz {
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            z-index: 1;
+            pointer-events: none;
         }
 
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 2px;
-            /* Reduzi um pouco a espessura da linha também */
-            background: linear-gradient(to right, var(--color-1), var(--color-4));
-            margin: 15px auto 0;
-            border-radius: 2px;
+        .moldura-organica-quadrada {
+            position: relative;
+            width: 100%;
+            max-width: 280px;
+            aspect-ratio: 3 / 4;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(25px);
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            box-shadow:
+                0 0 0 15px rgba(255, 255, 255, 0.05),
+                0 40px 100px -20px rgba(0, 0, 0, 0.35);
+            border-radius: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            animation: flutuarHero 8s ease-in-out infinite;
+            padding: 20px;
         }
 
-        #resultados {
-            background-color: #ffffff;
+        @media (min-width: 1400px) {
+            .moldura-organica-quadrada {
+                width: 260px;
+                height: 360px;
+            }
+
         }
 
-        #localizacao {
-            background-color: var(--bg-light);
+        @keyframes flutuarHero {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-25px);
+            }
         }
 
-        #contatos {
-            background-color: #ffffff;
+        .video-wrapper {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 35px;
+            position: relative;
+            background: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-wrapper video,
+        .video-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .foto-recortada {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: contrast(1.02) brightness(1.04);
+            pointer-events: none;
+        }
+
+        .frase-bemvinda {
+            position: absolute;
+            top: -30px;
+            left: -20px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            color: var(--color-3);
+            padding: 14px 30px;
+            border-radius: 40px 40px 40px 8px;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: clamp(0.9rem, 1.5vw, 1.25rem);
+            white-space: nowrap;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            z-index: 25;
+            border: 1px solid white;
+            letter-spacing: 0.5px;
+        }
+
+        .brilho {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: brilhar 5s infinite;
+            z-index: 7;
+        }
+
+        @keyframes brilhar {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.5);
+                box-shadow: 0 0 15px white;
+            }
+        }
+
+        .borboleta {
+            position: absolute;
+            width: clamp(45px, 6vw, 65px);
+            height: clamp(45px, 6vw, 65px);
+            z-index: 15;
+            filter: drop-shadow(0 8px 15px rgba(0, 0, 0, 0.3));
+        }
+
+        .borboleta svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .asa {
+            fill: #ffffff;
+            transform-origin: center;
+            animation: flap 0.18s infinite alternate ease-in-out;
+        }
+
+        .corpo-borboleta {
+            fill: var(--color-accent);
+        }
+
+        .borboleta-topo {
+            top: 10%;
+            right: -10%;
+            animation: tremor 5.5s infinite ease-in-out;
+            transform: rotate(15deg);
+        }
+
+        .borboleta-base {
+            bottom: 15%;
+            left: -8%;
+            animation: tremor 7s infinite ease-in-out;
+            transform: rotate(-10deg);
+        }
+
+        @keyframes flap {
+            from {
+                transform: scaleX(1);
+            }
+
+            to {
+                transform: scaleX(0.25);
+            }
+        }
+
+        @keyframes tremor {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(inherit);
+            }
+
+            50% {
+                transform: translate(8px, -12px) rotate(inherit);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .conteudo-hero {
+                flex-direction: column;
+                text-align: center;
+                gap: 60px;
+            }
+
+            .texto-principal {
+                max-width: 100%;
+            }
+
+            .frase-bemvinda {
+                left: 50%;
+                transform: translateX(-50%);
+                top: -25px;
+            }
+
+            .borboleta-topo {
+                right: -5%;
+            }
+
+            .borboleta-base {
+                left: -5%;
+            }
         }
 
         /* ============================================================
-           SEÇÃO BOAS VINDAS (BRANCA)
-           ============================================================ */
-
+   4. SEÇÃO BOAS VINDAS
+   ============================================================ */
         .secao-boas-vindas {
             background: #fff;
             padding: 80px 8% 100px;
@@ -258,8 +552,7 @@ $logado = isset($_SESSION['usuario_id']);
             font-family: 'Playfair Display', serif;
             font-size: clamp(26px, 5vw, 40px);
             color: #222;
-            margin-bottom: 30px;
-            /* FORÇANDO O PESO MAIS FINO TAMBÉM AQUI */
+            margin-bottom: 100px;
             font-weight: 300 !important;
         }
 
@@ -275,273 +568,13 @@ $logado = isset($_SESSION['usuario_id']);
             max-width: 900px;
             margin: 0 auto;
             color: #555;
-            font-size: 17px;
+            font-size: clamp(16px, 2.5vw, 25px);
             line-height: 1.8;
         }
 
         /* ============================================================
-           RESPONSIVIDADE
-           ============================================================ */
-        @media (max-width: 992px) {
-            .header-wrapper {
-                mask-image: none;
-                min-height: auto;
-            }
-
-            #inicio {
-                flex-direction: column;
-                text-align: center;
-                padding-top: 120px;
-                padding-bottom: 0;
-            }
-
-            .texto-principal {
-                padding-bottom: 50px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .container-foto {
-                justify-content: center;
-                width: 100%;
-            }
-
-            .foto-recortada {
-                max-height: 60vh;
-            }
-
-            .links-institucionais {
-                display: none;
-            }
-        }
-
-
-        /* ============================================================
-           MODAL LOGIN (ESTILIZADO)
-           ============================================================ */
-        .modal-login {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 2000;
-            /* Acima do nav */
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-        }
-
-        .caixa-login {
-            background: #ffffff;
-            padding: 50px 40px;
-            border-radius: 30px;
-            width: 90%;
-            max-width: 420px;
-            text-align: center;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
-            position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-        }
-
-        .caixa-login h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 28px;
-            font-weight: 400;
-            margin-bottom: 30px;
-            color: var(--text-dark);
-        }
-
-        .caixa-login h3 b {
-            font-weight: 700;
-            color: var(--color-2);
-            position: relative;
-        }
-
-        .input-login {
-            width: 100%;
-            padding: 16px 20px;
-            margin-bottom: 15px;
-            border: 1px solid #f0f0f0;
-            background: #fafafa;
-            border-radius: 15px;
-            outline: none;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 14px;
-            transition: 0.3s;
-        }
-
-        .input-login:focus {
-            border-color: var(--color-2);
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(253, 152, 126, 0.1);
-        }
-
-        .acoes-usuario {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-greeting {
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .btn-logout {
-            background: #FD9585;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 700;
-            text-decoration: none;
-            display: inline-block;
-            transition: 0.3s;
-        }
-
-        .btn-logout:hover {
-            opacity: 0.85;
-        }
-
-        .botao-acao-modal {
-            width: 100%;
-            padding: 16px;
-            border-radius: 15px;
-            border: none;
-            background: linear-gradient(to right, var(--color-1), var(--color-3));
-            color: white;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
-        }
-
-        .botao-acao-modal:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(253, 152, 126, 0.3);
-        }
-
-        .divisor-modal {
-            display: flex;
-            align-items: center;
-            margin: 30px 0;
-            color: #ccc;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .divisor-modal::before,
-        .divisor-modal::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: #eee;
-        }
-
-        .divisor-modal span {
-            padding: 0 15px;
-        }
-
-        .link-toggle {
-            color: var(--color-2);
-            text-decoration: none;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 13px;
-            transition: 0.2s;
-        }
-
-        .link-toggle:hover {
-            color: var(--color-1);
-        }
-
-        .fechar-modal {
-            position: absolute;
-            top: 20px;
-            right: 25px;
-            font-size: 24px;
-            cursor: pointer;
-            color: #999;
-            transition: 0.3s;
-        }
-
-        .fechar-modal:hover {
-            color: var(--text-dark);
-        }
-
-        .escondido {
-            display: none;
-        }
-
-        .alerta-erro {
-            background: #fff5f5;
-            color: #e53e3e;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #fed7d7;
-        }
-
-        .fechar-modal {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: transparent;
-            border: none;
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .fechar-modal:hover {
-            color: #FD9585;
-            transform: scale(1.2);
-        }
-
-        .fechar-modal {
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-        }
-
-        /* Seção Serviços*/
-
-        /* Card de Agendamento */
-        :root {
-
-            --agendador-gradient: linear-gradient(225deg,
-                    #ffa361e7 0%,
-                    #fd977eea 15%,
-                    #fd9585e8 50%,
-                    #FAA7D5 97%);
-            --cor-branco: #ffffff;
-            --cor-texto: #333333;
-            --raio-borda: 25px;
-        }
-
-        /* =======================================
-   AGENDADOR – Estilo Visual Premium
-   ======================================= */
+   5. SEÇÃO SERVIÇOS / AGENDADOR
+   ============================================================ */
 
         /* 1. Fundo do agendador (gradiente vertical) */
         .agendador {
@@ -549,27 +582,13 @@ $logado = isset($_SESSION['usuario_id']);
                     #ff9e67 0%,
                     #fd8a8a 50%,
                     #f9a1d0 100%);
-
-            /* gradiente suave criador pelo CSS */
-            :contentReference[oaicite:0] {
-                index=0
-            }
-
             border-radius: 30px;
-
-            /* cantos arredondados grandes */
-            :contentReference[oaicite:1] {
-                index=1
-            }
-
             padding: 30px;
-            /* espaço interno */
             color: white;
             max-width: 550px;
             margin: 20px auto;
             box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
-            font-family: 'Segoe UI',
-            sans-serif;
+            font-family: 'Segoe UI', sans-serif;
         }
 
         /* 2. Cabeçalho do agendador */
@@ -605,45 +624,32 @@ $logado = isset($_SESSION['usuario_id']);
         #subcategorias {
             display: flex;
             flex-wrap: wrap;
-            /* Permite quebra de linha */
             justify-content: center;
-            /* Centraliza itens em cada linha */
             gap: 8px 10px;
-            /* Menor espaçamento entre subcategorias */
             margin-bottom: 18px;
         }
 
-        /* Subcategoria padrão (menor que categorias) */
+        /* Subcategoria padrão */
         #subcategorias .item {
             padding: 6px 12px;
-            /* Padding menor para reduzir tamanho geral */
             border-radius: 30px;
-            /* Continua arredondado estilo pílula */
             border: 1px solid #fff;
-            /* Borda branca fina */
             background: transparent;
             color: #fff;
             font-size: 0.85rem;
-            /* Fonte um pouco menor */
             font-weight: 600;
             cursor: pointer;
             transition: all 0.25s ease;
-            /* Transição suave para hover */
         }
 
-        /* Hover nas Subcategorias */
         #subcategorias .item:hover {
             background: rgba(255, 255, 255, 0.2);
             transform: scale(1.04);
-            /* Leve destaque visual ao passar o mouse */
         }
 
-        /* Subcategoria ativa */
         #subcategorias .item.ativo {
             background: #fff;
-            /* Fundo branco no ativo */
             color: #fd8a8a;
-            /* Texto rosa/coral para contraste */
             border: none;
             font-weight: 700;
         }
@@ -651,11 +657,6 @@ $logado = isset($_SESSION['usuario_id']);
         .filtros .item {
             padding: 8px 14px;
             border-radius: 30px;
-
-            :contentReference[oaicite:2] {
-                index=2
-            }
-
             border: 1.5px solid #fff;
             background: transparent;
             color: #fff;
@@ -670,18 +671,14 @@ $logado = isset($_SESSION['usuario_id']);
 
         .filtros .item.ativo {
             background: #fff;
-            /* botão ativo branco */
             border: none;
             color: #fd8a8a;
-            /* contraste com o gradiente */
             font-weight: 700;
         }
-
 
         /* 4. Lista de serviços – card interno */
         .lista .servico {
             background: rgba(255, 255, 255, 0.51);
-            /* leve opacidade */
             border-radius: 15px;
             padding: 12px 16px;
             margin: 8px 0;
@@ -739,124 +736,91 @@ $logado = isset($_SESSION['usuario_id']);
             transform: scale(1.02);
         }
 
-        /* ===== RESUMO DE SERVIÇOS ===== */
-        /* ===== RESUMO DE SERVIÇOS ===== */
+        /* Resumo de Selecionados */
         .resumo-selecionados {
-            background: #fff;
-            /* fundo branco para destacar */
-            border-radius: 12px;
-            /* bordas arredondadas */
-            border: 1px solid rgba(0, 0, 0, 0.10);
-            /* borda suave para conter o bloco */
-            padding: 10px 15px;
-            /* espaçamento interno */
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 15px;
             margin: 20px auto;
-            /* separa do conteúdo acima */
-            font-size: 0.9rem;
-            /* fonte confortável */
             max-width: 420px;
-            /* largura parecida com o agendador */
-            box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.08);
-            /* sombra leve */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        /* Título do resumo */
         .resumo-selecionados h4 {
-            margin: 0 0 8px 0;
-            font-size: 1rem;
+            margin-bottom: 10px;
+            font-size: 14px;
             font-weight: 700;
             color: #333;
-            text-align: center;
         }
 
-        /* Lista sem marcas e limpa */
-        #lista-selecionados {
-            list-style: none;
-
-            /* remove bullets padrão da <ul> */
-            :contentReference[oaicite:1] {
-                index=1
-            }
-
-            padding: 0;
-            margin: 0 0 10px 0;
-        }
-
-        /* Cada item */
+        /* Lista */
         #lista-selecionados li {
             display: flex;
-            /* alinha nome + botão lado a lado */
             justify-content: space-between;
             align-items: center;
             background: #fafafa;
-            /* fundo levemente contrastante */
-            padding: 8px 10px;
-            margin-bottom: 6px;
-            border-radius: 8px;
-            /* cantos suavizados */
-            font-weight: 500;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            transition: 0.2s;
+        }
+
+        #lista-selecionados li:hover {
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Info interna */
+        .resumo-item-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .resumo-nome {
+            font-weight: 600;
+            font-size: 13px;
             color: #333;
         }
 
-        /* Botão de remover */
-        #lista-selecionados li button.remover {
-            background: transparent;
+        .resumo-preco {
+            font-size: 12px;
+            color: #888;
+        }
+
+        /* Botão remover */
+        .remover {
+            background: none;
             border: none;
-            color: #e74c3c;
-            /* vermelho para “X” */
-            font-size: 1.2rem;
+            font-size: 18px;
+            color: #bbb;
             cursor: pointer;
-            padding: 0 6px;
-            line-height: 1;
-            transition: color 0.2s;
-            /* suave no hover */
+            transition: 0.2s;
         }
 
-        #lista-selecionados li button.remover:hover {
-            color: #c0392b;
+        .remover:hover {
+            color: #FD9585;
+            transform: scale(1.2);
         }
 
-        /* Texto de total */
+        /* Total */
         #total-geral {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #ddd;
             font-weight: 700;
-            text-align: right;
-            color: #222;
-        }
-
-        /* Ajustes opcionais para responsividade */
-        @media (max-width: 600px) {
-            .agendador {
-                padding: 20px;
-            }
-
-            .filtros .item {
-                padding: 7px 12px;
-                font-size: 0.85rem;
-            }
-        }
-
-        .lista {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            justify-content: space-between;
+            color: #FD9585;
         }
 
-        /* Calendário e Grade */
+        /* Calendário e Horários */
         .mes {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
             font-weight: 700;
-        }
-
-        .dias-semana {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            text-align: center;
-            font-size: 0.7rem;
-            margin-bottom: 10px;
-            opacity: 0.8;
         }
 
         .grade {
@@ -871,82 +835,324 @@ $logado = isset($_SESSION['usuario_id']);
             font-weight: 700;
         }
 
-        /* Formulários e Termos */
-        .campo-confirmacao {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-        }
-
-        .termos {
-            font-size: 0.75rem;
-            margin: 15px 0;
-            padding-left: 20px;
-            color: #666;
-        }
-
-        /* Botões */
-        .botao {
+        /* Botões do Agendador */
+        .agendador .botao {
             width: 100%;
             padding: 16px;
-            border-radius: 12px;
-            border: none;
-            font-weight: 700;
+            border-radius: 15px;
+            background: #fff;
+            color: #fd8a8a;
             text-transform: uppercase;
+            font-weight: 800;
             cursor: pointer;
             transition: 0.3s;
         }
 
-        .tema-colorido .botao {
-            background: var(--cor-branco);
-            color: #FD9585;
+        /* ============================================================
+   6. SEÇÕES GENÉRICAS (RESULTADOS, LOCALIZAÇÃO, CONTATOS)
+   ============================================================ */
+        section {
+            padding: 110px 8%;
+            min-height: 100dvh;
+            padding-top: 60px;
+            padding-bottom: 80px;
         }
 
-        .tema-branco .botao {
-            background: var(--agendador-gradient);
-            color: var(--cor-branco);
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(32px, 5vw, 48px);
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 90px;
+            position: relative;
+            font-weight: 300 !important;
         }
 
-        .oculto {
+        .section-title b {
+            font-weight: 700 !important;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(to right, var(--color-1), var(--color-4));
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+        #resultados {
+            background-color: #ffffff;
+        }
+
+        #localizacao {
+            background-color: var(--bg-light);
+        }
+
+        #contatos {
+            background-color: #ffffff;
+        }
+
+        /* ============================================================
+   7. MODAL LOGIN
+   ============================================================ */
+        .modal-login {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .caixa-login {
+            background: #ffffff;
+            padding: 50px 40px;
+            border-radius: 30px;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+            position: relative;
+        }
+
+        .input-login {
+            width: 100%;
+            padding: 16px 20px;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            border: 1px solid #f0f0f0;
+            background: #fafafa;
+        }
+
+        .botao-acao-modal {
+            width: 100%;
+            padding: 16px;
+            border-radius: 15px;
+            background: linear-gradient(to right, var(--color-1), var(--color-3));
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .fechar-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* ============================================================
+        8. UTILITÁRIOS E RESPONSIVIDADE
+        ============================================================ */
+        .oculto,
+        .escondido {
             display: none !important;
         }
 
-        .notificacao {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            z-index: 10;
+        @media (max-width: 992px) {
+            .header-wrapper {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                -webkit-mask-image: none;
+                mask-image: none;
+            }
+
+            #inicio {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding: 110px 5% 0;
+            }
+
+            .conteudo-hero {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                gap: 0;
+            }
+
+            .container-foto {
+                display: flex !important;
+                order: 2;
+                width: 100%;
+                justify-content: center;
+                margin-bottom: -50px;
+                z-index: 5;
+            }
+
+            .foto-recortada {
+                max-height: 55vh;
+                width: auto;
+                object-fit: contain;
+                filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.25));
+            }
+
+            .nome-imagem-logo {
+                order: 3;
+                max-width: 85%;
+                margin: 0 auto 15px;
+                z-index: 10;
+                filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.1));
+            }
+
+            .descricao-hero {
+                order: 4;
+                font-size: 14px;
+                line-height: 1.8;
+                padding: 0 15px 60px;
+                max-width: 500px;
+                margin: 0 auto;
+                text-align: justify;
+                text-indent: 40px;
+                hyphens: auto;
+            }
+
+            .texto-principal {
+                display: contents;
+            }
         }
 
-        .oculto {
+        @media (max-width: 600px) {
+            .agendador {
+                padding: 20px;
+            }
+
+            .filtros .item {
+                padding: 7px 12px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Estilos de menu responsivo */
+
+        .menu-toggle {
             display: none;
-        }
-
-        .btn-adm a {
-            background: linear-gradient(90deg, #8c77d8, #e07ddd);
-            color: white;
-            padding: 10px 28px;
-            border-radius: 50px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            border: none;
+            flex-direction: column;
+            gap: 5px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(157, 133, 247, 0.4);
-            flex-shrink: 0;
-            transition: all 0.3s;
+            z-index: 2000;
         }
 
-        a {
-            text-decoration: none;
+        .menu-toggle .bar {
+            width: 25px;
+            height: 3px;
+            background-color: #fff;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        .nav-principal.nav-scroll .menu-toggle .bar {
+            background-color: #333;
+        }
+
+        @media (max-width: 992px) {
+            .menu-toggle {
+                display: flex;
+            }
+
+            .links-institucionais,
+            .acoes-usuario,
+            .btn-adm {
+                position: fixed;
+                right: -100%;
+                background: #fff;
+                transition: 0.4s ease-in-out;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                z-index: 1500;
+            }
+
+            .links-institucionais {
+                top: 0;
+                width: 280px;
+                height: 100vh;
+                padding-top: 100px;
+                gap: 30px;
+                box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+            }
+
+            .acoes-usuario {
+                top: 450px;
+                right: -100%;
+                width: 280px;
+                gap: 20px;
+            }
+
+            .btn-adm {
+                top: 380px;
+                right: -100%;
+                width: 280px;
+            }
+
+            .nav-principal.menu-aberto .links-institucionais,
+            .nav-principal.menu-aberto .acoes-usuario,
+            .nav-principal.menu-aberto .btn-adm {
+                right: 0;
+            }
+
+            .nav-link {
+                color: var(--text-dark) !important;
+                font-size: 16px !important;
+            }
+
+            .user-info {
+                background: rgba(0, 0, 0, 0.05);
+                backdrop-filter: none;
+            }
+
+            .user-greeting {
+                color: var(--text-dark);
+            }
+
+            .user-sub {
+                color: rgba(0, 0, 0, 0.6);
+            }
+
+            .btn-logout {
+                color: var(--text-dark);
+                border: 1px solid rgba(0, 0, 0, 0.2);
+            }
+
+            .btn-logout:hover {
+                background: var(--color-2);
+                color: #fff;
+            }
+
+            .user-greeting {
+                color: var(--text-dark);
+                margin-bottom: 10px;
+                display: block;
+            }
+
+            .menu-toggle.active .bar:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+                background-color: var(--color-2);
+            }
+
+            .menu-toggle.active .bar:nth-child(2) {
+                opacity: 0;
+            }
+
+            .menu-toggle.active .bar:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+                background-color: var(--color-2);
+            }
         }
     </style>
 </head>
@@ -956,7 +1162,14 @@ $logado = isset($_SESSION['usuario_id']);
     <div class="site-container">
 
         <div class="header-wrapper">
+
             <nav class="nav-principal">
+
+                <div class="menu-toggle" id="mobile-menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
                 <div class="links-institucionais">
                     <a href="#inicio" class="nav-link">Início</a>
                     <a href="#servicos" class="nav-link">Serviços</a>
@@ -974,24 +1187,36 @@ $logado = isset($_SESSION['usuario_id']);
 
                 <div class="acoes-usuario">
                     <?php if ($logado): ?>
-                        <div class="user-info">
-                            <span class="user-greeting">
-                                Olá, <?php echo htmlspecialchars(explode(' ', $_SESSION['usuario_nome'])[0]); ?>!
-                            </span>
 
-                            <a href="auth/logout.php" class="btn-logout">SAIR DA CONTA</a>
+                        <div class="user-info">
+
+                            <div class="user-avatar">
+                                <?php echo strtoupper(substr($_SESSION['usuario_nome'], 0, 1)); ?>
+                            </div>
+
+                            <div class="user-texto">
+                                <span class="user-greeting">
+                                    Olá,
+                                    <?php echo htmlspecialchars(explode(' ', $_SESSION['usuario_nome'])[0]); ?>
+                                </span>
+                                <span class="user-sub">Bem-vinda de volta</span>
+                            </div>
+
+                            <a href="auth/logout.php" class="btn-logout">Sair</a>
+
                         </div>
+
                     <?php else: ?>
+
                         <a href="javascript:void(0)" class="nav-link" onclick="abrirLogin()" style="font-weight: 800;">
                             Login
                         </a>
-                    <?php endif; ?>
 
+                    <?php endif; ?>
                     <a href="#container-principal" class="botao-agendar">Agendar</a>
                 </div>
 
             </nav>
-            <!-- Modal Login & Registro -->
             <div id="modalLogin" class="modal-login">
                 <div class="caixa-login">
 
@@ -999,7 +1224,6 @@ $logado = isset($_SESSION['usuario_id']);
                         <div class="alerta-erro">E-mail ou palavra-passe incorretos.</div>
                     <?php endif; ?>
 
-                    <!-- Vista de Login -->
                     <div id="containerLogin" class="vista-login <?php echo $logado ? 'escondido' : ''; ?>">
                         <h3
                             style="margin-bottom: 25px; font-family: 'Playfair Display', serif; font-size: 26px; color: #000;">
@@ -1015,7 +1239,7 @@ $logado = isset($_SESSION['usuario_id']);
 
                         <div class="divisor-modal"><span>ou</span></div>
                         <div id="g_id_onload"
-                            data-client_id="821436734385-382dk4ipi7d31dlllfogujl1o1jbo2i7.apps.googleusercontent.com"
+                            data-client_id="821436734385-7cdnrc9a23v52qkfekevi35sumdr4so8.apps.googleusercontent.com"
                             data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse"
                             data-auto_prompt="false">
                         </div>
@@ -1028,7 +1252,6 @@ $logado = isset($_SESSION['usuario_id']);
                                 agora</span></p>
                     </div>
 
-                    <!-- Vista de Registro Corrigida -->
                     <div id="containerRegistro" class="vista-registro escondido">
                         <h3
                             style="margin-bottom: 25px; font-family: 'Playfair Display', serif; font-size: 26px; color: #000;">
@@ -1052,9 +1275,8 @@ $logado = isset($_SESSION['usuario_id']);
             <section id="inicio">
                 <div class="conteudo-hero">
                     <div class="texto-principal">
-                        <p class="tagline">Bem-vinda ao seu momento</p>
 
-                        <img src="nomeLogo.png" alt="Logo Marcella Gonçalves" class="nome-imagem-logo">
+                        <img src="logo.png" alt="Logo Marcella Gonçalves" class="nome-imagem-logo">
 
                         <p class="descricao-hero">
                             Transformando olhares através da naturalidade. Mais de 20 mil atendimentos realizados com
@@ -1063,7 +1285,58 @@ $logado = isset($_SESSION['usuario_id']);
                     </div>
 
                     <div class="container-foto">
-                        <img src="fotoMarcella.png" alt="Marcella Gonçalves" class="foto-recortada">
+                        <div class="aura-luz"></div>
+
+                        <div class="brilho" style="top: -5%; left: 0%; width: 7px; height: 7px; animation-delay: 0s;">
+                        </div>
+                        <div class="brilho"
+                            style="bottom: 10%; right: -5%; width: 5px; height: 5px; animation-delay: 2.5s;"></div>
+
+                        <div class="moldura-organica-quadrada">
+
+                            <div class="frase-bemvinda">
+                                Bem-vinda ao seu momento
+                            </div>
+
+                            <div class="borboleta borboleta-topo">
+                                <svg viewBox="0 0 100 100">
+                                    <path d="M48 40 Q45 25 35 20 M52 40 Q55 25 65 20" stroke="white" fill="none"
+                                        stroke-width="1.5" />
+                                    <g class="asa">
+                                        <path d="M50 50 C20 10 5 40 15 60" fill="white" opacity="0.95" />
+                                        <path d="M50 50 C25 60 10 85 30 85" fill="white" opacity="0.75" />
+                                    </g>
+                                    <g class="asa" style="transform: scaleX(-1); transform-origin: 50px;">
+                                        <path d="M50 50 C20 10 5 40 15 60" fill="white" opacity="0.95" />
+                                        <path d="M50 50 C25 60 10 85 30 85" fill="white" opacity="0.75" />
+                                    </g>
+                                    <ellipse cx="50" cy="55" rx="3" ry="12" class="corpo-borboleta" />
+                                </svg>
+                            </div>
+
+                            <div class="video-wrapper">
+                                <video autoplay muted loop playsinline class="foto-recortada">
+                                    <source src="marcella.mp4" type="video/mp4">
+                                    O seu navegador não suporta a reprodução de vídeo.
+                                </video>
+                            </div>
+
+                            <div class="borboleta borboleta-base">
+                                <svg viewBox="0 0 100 100">
+                                    <path d="M48 40 Q45 25 35 20 M52 40 Q55 25 65 20" stroke="white" fill="none"
+                                        stroke-width="1.5" />
+                                    <g class="asa">
+                                        <path d="M50 50 C20 10 5 40 15 60" fill="rgba(255,255,255,0.95)" />
+                                        <path d="M50 50 C25 60 10 85 30 85" fill="rgba(255,255,255,0.75)" />
+                                    </g>
+                                    <g class="asa" style="transform: scaleX(-1); transform-origin: 50px;">
+                                        <path d="M50 50 C20 10 5 40 15 60" fill="rgba(255,255,255,0.95)" />
+                                        <path d="M50 50 C25 60 10 85 30 85" fill="rgba(255,255,255,0.75)" />
+                                    </g>
+                                    <ellipse cx="50" cy="55" rx="3" ry="12" class="corpo-borboleta" />
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1096,7 +1369,7 @@ $logado = isset($_SESSION['usuario_id']);
 
                 <div class="topo">AGENDE SEU HORARIO</div>
 
-                <!-- ETAPA 1 -->
+
                 <div id="etapa1">
                     <div class="corpo">
                         <div class="filtros" id="categorias">
@@ -1122,7 +1395,7 @@ $logado = isset($_SESSION['usuario_id']);
                     </div>
                 </div>
 
-                <!-- ETAPA 2 -->
+
                 <div id="etapa2" class="oculto">
                     <div class="corpo">
                         <div class="mes">
@@ -1163,7 +1436,6 @@ $logado = isset($_SESSION['usuario_id']);
                     </div>
                 </div>
 
-                <!-- ETAPA 3 -->
                 <div id="etapa3" class="oculto">
                     <div class="corpo">
                         <div class="resumo-container">
@@ -1199,7 +1471,6 @@ $logado = isset($_SESSION['usuario_id']);
                     </div>
                 </div>
 
-                <!-- ETAPA 4 -->
                 <div id="etapa4" class="oculto">
                     <div class="corpo">
                         <div class="confirmacao-container">
@@ -1268,8 +1539,9 @@ $logado = isset($_SESSION['usuario_id']);
     </div>
 
     <script>
-
-        // Inicialização e Listeners
+        // ==============================
+        // INICIALIZAÇÃO DA APLICAÇÃO
+        // ==============================
 
         document.addEventListener("DOMContentLoaded", function () {
 
@@ -1303,9 +1575,34 @@ $logado = isset($_SESSION['usuario_id']);
             });
         }
 
-        /**
-         * AUTENTICAÇÃO E MODAIS
-         */
+        // ==============================
+        // NAVEGAÇÃO MOBILE (ABRIR/FECHAR MENU)
+        // ==============================
+
+        const menuToggle = document.getElementById('mobile-menu');
+        const navPrincipal = document.querySelector('.nav-principal');
+        const linksParaFechar = document.querySelectorAll('.nav-link, .botao-agendar, .btn-logout, .btn-adm a');
+
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            navPrincipal.classList.toggle('menu-aberto');
+        });
+
+        linksParaFechar.forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                navPrincipal.classList.remove('menu-aberto');
+            });
+        });
+
+        // ==============================
+        // CONTROLE DE USUÁRIO (LOGIN)
+        // ==============================
+
+        const USUARIO_NAME = "<?php echo $_SESSION['usuario_name'] ?? 'Visitante'; ?>";
+
+        const IS_ADMIN = "<?php echo (isset($_SESSION['usuario_tipo']) && $_SESSION['usuario_tipo'] === 'admin') ? 'true' : 'false'; ?>";
+
         function abrirLogin() { document.getElementById('modalLogin').style.display = 'flex'; }
         function fecharLogin() { document.getElementById('modalLogin').style.display = 'none'; }
         function toggleVistas() {
@@ -1314,17 +1611,35 @@ $logado = isset($_SESSION['usuario_id']);
         }
 
         function handleCredentialResponse(response) {
-            fetch("/auth/login_google.php", {
+            console.log("TOKEN:", response.credential);
+
+            fetch("auth/login_google.php", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id_token: response.credential })
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    credential: response.credential
+                })
             })
                 .then(res => res.json())
                 .then(data => {
-                    if (data.success) window.location.href = "index.php";
-                    else alert("Erro: " + data.message);
+                    console.log("RESPOSTA:", data);
+
+                    if (data.success) {
+                        window.location.href = "index.php";
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(err => {
+                    console.error("Erro:", err);
                 });
         }
+
+        // ==============================
+        // CARREGAMENTO DE DADOS (AGENDA)
+        // ==============================
 
         async function carregarHorariosDisponiveis(dataEscolhida) {
 
@@ -1364,6 +1679,7 @@ $logado = isset($_SESSION['usuario_id']);
                 container.innerHTML = "Erro ao carregar horários";
             }
         }
+
 
         const dados = {
             manicure: {
@@ -1436,15 +1752,50 @@ $logado = isset($_SESSION['usuario_id']);
             }
         };
 
+        // ==============================
+        // ETAPA 1 - NAVEGAÇÃO ENTRE ETAPAS
+        // ==============================
+
+        function atualizarBotao() {
+            const btn = document.getElementById("proximo");
+            if (!btn) return;
+
+            if (servicosSelecionados.length > 0) {
+                btn.classList.add("pronto");
+                btn.disabled = false;
+            } else {
+                btn.classList.remove("pronto");
+                btn.disabled = true;
+            }
+        }
+
+        function irParaEtapa(numero) {
+            document.getElementById("etapa1").classList.add("oculto");
+            document.getElementById("etapa2").classList.add("oculto");
+            document.getElementById("etapa3").classList.add("oculto");
+            document.getElementById("etapa4").classList.add("oculto"); // 👈 faltava isso
+
+            document.getElementById("etapa" + numero).classList.remove("oculto");
+
+            if (numero === 3) mostrarResumo();
+        }
+
+        function voltar() {
+            document.getElementById("etapa2").classList.add("oculto");
+            document.getElementById("etapa1").classList.remove("oculto");
+        }
+
+        // ==============================
+        // ETAPA 1 - CATEGORIAS E SERVIÇOS
+        // ==============================
+
         let categoriaAtual = null;
         let subAtual = null;
         let servicosSelecionados = [];
-        const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-        let data = new Date();
 
         function iniciar() {
             desenharCategorias();
-            carregarAgendamento(); // Função que carrega agendamentos do localStorage
+            carregarAgendamento();
         }
 
         function desenharCategorias() {
@@ -1465,7 +1816,7 @@ $logado = isset($_SESSION['usuario_id']);
         function selecionarPrimeiraCategoria() {
             const btns = document.querySelectorAll("#categorias .item");
             if (btns.length > 0) {
-                btns[0].click(); // simula o clique no primeiro botão
+                btns[0].click();
             }
         }
 
@@ -1497,7 +1848,6 @@ $logado = isset($_SESSION['usuario_id']);
 
             div.classList.remove("oculto");
 
-            // Garante que a primeira subcategoria seja ativada
             let keys = Object.keys(cat.subs);
 
             keys.forEach((subKey, index) => {
@@ -1505,7 +1855,6 @@ $logado = isset($_SESSION['usuario_id']);
                 btn.className = "item";
                 btn.innerText = cat.subs[subKey].nome;
 
-                // Marca automaticamente como ativo se for a selecionada
                 if (subKey === subAtual) {
                     btn.classList.add("ativo");
                 }
@@ -1522,7 +1871,7 @@ $logado = isset($_SESSION['usuario_id']);
         }
         function mostrarServicos() {
             const div = document.getElementById("lista-servicos");
-            div.innerHTML = ""; // Limpa antes de adicionar
+            div.innerHTML = "";
             if (!categoriaAtual) return;
 
             let lista = [];
@@ -1538,24 +1887,57 @@ $logado = isset($_SESSION['usuario_id']);
             lista.forEach(serv => {
                 const item = document.createElement("div");
                 item.className = "servico";
-                item.innerHTML = `<div><div class="nome">${serv.nome}</div><div class="tempo">${serv.tempo}</div></div><div class="preco">R$ ${serv.preco}</div>`;
+
+
+                if (servicosSelecionados.some(s => s.nome === serv.nome)) {
+                    item.classList.add("eleito");
+                }
+
+                item.innerHTML = `
+        <div>
+            <div class="nome">${serv.nome}</div>
+            <div class="tempo">${serv.tempo}</div>
+        </div>
+        <div class="preco">R$ ${serv.preco}</div>
+    `;
+
                 item.onclick = () => selecionarServico(item, serv);
+
                 div.appendChild(item);
             });
         }
+
+
+
+        function selecionarServico(div, serv) {
+            const index = servicosSelecionados.findIndex(s => s.nome === serv.nome);
+
+            if (index > -1) {
+                servicosSelecionados.splice(index, 1);
+                div.classList.remove("eleito");
+            } else {
+                servicosSelecionados.push(serv);
+                div.classList.add("eleito");
+            }
+
+            atualizarResumoSelecionados();
+            atualizarBotao();
+        }
+
+        // ==============================
+        // RESUMO DOS SERVIÇOS SELECIONADOS
+        // ==============================
 
         function atualizarResumoSelecionados() {
             const lista = document.getElementById("lista-selecionados");
             const box = document.getElementById("resumo-selecionados");
             const totalEl = document.getElementById("total-geral");
 
-            // Se não tiver nada selecionado, esconde o resumo
             if (servicosSelecionados.length === 0) {
                 box.classList.add("oculto");
                 return;
             }
 
-            // Mostra o resumo
             box.classList.remove("oculto");
             lista.innerHTML = "";
 
@@ -1563,7 +1945,13 @@ $logado = isset($_SESSION['usuario_id']);
             servicosSelecionados.forEach((serv, index) => {
                 const li = document.createElement("li");
                 const removerBtn = `<button class="remover" onclick="removerServico(${index})">×</button>`;
-                li.innerHTML = `${serv.nome} - R$ ${serv.preco} ${removerBtn}`;
+                li.innerHTML = `
+    <div class="resumo-item-info">
+        <span class="resumo-nome">${serv.nome}</span>
+        <span class="resumo-preco">R$ ${serv.preco}</span>
+    </div>
+    <button class="remover" onclick="removerServico(${index})">×</button>
+`;
                 lista.appendChild(li);
                 total += serv.preco;
             });
@@ -1572,68 +1960,10 @@ $logado = isset($_SESSION['usuario_id']);
         }
 
         function removerServico(index) {
-            servicosSelecionados.splice(index, 1);  // remove do array
-            document.querySelectorAll(".servico")[index].classList.remove("eleito"); // desmarca visualmente
-            atualizarResumoSelecionados();  // atualiza a interface
-            atualizarBotao();                // atualiza o botão
-        }
-        /**
-         * LÓGICA DE TEMPO E AGENDAMENTO
-         */
-
-        function selecionarServico(div, serv) {
-            // Verifica se já está selecionado
-            const index = servicosSelecionados.findIndex(s => s.nome === serv.nome);
-
-            if (index > -1) {
-                // Já estava no array → remove (deseleciona)
-                servicosSelecionados.splice(index, 1);
-                div.classList.remove("eleito");
-            } else {
-                // Adiciona ao array (seleciona)
-                servicosSelecionados.push(serv);
-                div.classList.add("eleito");
-            }
-
+            servicosSelecionados.splice(index, 1);
+            document.querySelectorAll(".servico")[index].classList.remove("eleito");
             atualizarResumoSelecionados();
-            atualizarBotao(); // Atualiza botão “Próximo”
-        }
-
-        function atualizarBotao() {
-            const btn = document.getElementById("proximo");
-            if (!btn) return;
-
-            if (servicosSelecionados.length > 0) {
-                btn.classList.add("pronto");
-                btn.disabled = false; // Habilita se houver algum selecionado
-            } else {
-                btn.classList.remove("pronto");
-                btn.disabled = true;  // Desabilita se nada selecionado
-            }
-        }
-
-        function irParaEtapa(numero) {
-            document.getElementById("etapa1").classList.add("oculto");
-            document.getElementById("etapa2").classList.add("oculto");
-            document.getElementById("etapa3").classList.add("oculto");
-            document.getElementById("etapa4").classList.add("oculto"); // 👈 faltava isso
-
-            document.getElementById("etapa" + numero).classList.remove("oculto");
-
-            if (numero === 3) mostrarResumo();
-        }
-
-        function voltar() {
-            document.getElementById("etapa2").classList.add("oculto");
-            document.getElementById("etapa1").classList.remove("oculto");
-        }
-
-        function pegarMinutos(tempo) { return parseInt(tempo.replace(" MIN", "")); }
-
-        function calcularDuracaoTotal() {
-            let total = 0;
-            servicosSelecionados.forEach(serv => { total += pegarMinutos(serv.tempo); });
-            return total;
+            atualizarBotao();
         }
 
         function calcularTotal() {
@@ -1657,54 +1987,14 @@ $logado = isset($_SESSION['usuario_id']);
             document.getElementById("resumo-hora").innerText = selectedTimeValue;
         }
 
+        // ==============================
+        // ETAPA 2 - DATA E HORÁRIO
+        // ==============================
 
-        /**
-         * FINALIZAÇÃO E NOTIFICAÇÃO
-         */
-        function confirmarAgendamento() {
-            const nome = document.querySelector('input[name="nome"]').value;
-            const whatsapp = document.querySelector('input[name="whatsapp"]').value;
-            if (!usuario) { alert("Você precisa estar logado!"); return; }
-            const dadosParaEnviar = {
-                cliente_nome: nome,
-                whatsapp: whatsapp,
-                data: selectedFullDate,
-                hora_inicio: selectedTimeValue,
-                duracao: calcularDuracaoTotal(),
-                servicos: servicosSelecionados.map(s => s.nome),
-                valor_total: calcularTotal()
-            };
-            fetch("/api/agendamento/salvar_agendamento.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(dadosParaEnviar)
-            })
-                .then(res => res.json())
-                .then(resposta => {
-                    if (resposta.status === "ok") mostrarNotificacao();
-                    else alert("Erro ao salvar");
-                });
-        }
+        const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+            "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
-        function mostrarNotificacao() {
-            const n = document.getElementById("notificacao");
-            n.classList.remove("oculto");
-            setTimeout(() => n.classList.add("oculto"), 3000);
-        }
-
-        function carregarAgendamento() {
-            const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
-            if (!usuario) return;
-            fetch("/api/salvar_agendamento/" + usuario.id)
-                .then(res => res.json())
-                .then(agendamento => {
-                    if (!agendamento) return;
-                    const container = document.getElementById("meu-agendamento");
-                    if (!container) return;
-                    container.innerHTML = `<h3>Seu Agendamento</h3><p><b>Data:</b> ${agendamento.data}</p><p><b>Total:</b> ${agendamento.total}</p>`;
-                    container.classList.remove("oculto");
-                });
-        }
+        let data = new Date();
         let viewDate = new Date();
         let minDate = new Date();
         let maxDate = new Date();
@@ -1714,13 +2004,6 @@ $logado = isset($_SESSION['usuario_id']);
         let selectedTimeValue = null;
         let agendaVindaDoBanco = {};
 
-        // Integração PHP
-        const USUARIO_NAME = "<?php echo $_SESSION['usuario_name'] ?? 'Visitante'; ?>";
-        const IS_ADMIN = "<?php echo (isset($_SESSION['usuario_tipo']) && $_SESSION['usuario_tipo'] === 'admin') ? 'true' : 'false'; ?>";
-
-        /**
-         * FUNÇÕES DE BACKEND (FETCH)
-         */
         async function carregarAgendaDoBanco() {
             const mesAtual = viewDate.getMonth() + 1;
             const anoAtual = viewDate.getFullYear();
@@ -1755,7 +2038,6 @@ $logado = isset($_SESSION['usuario_id']);
                 const horariosOcupados = agendaVindaDoBanco[dateKey];
 
                 if (!horariosOcupados) {
-                    // Não tem nenhum agendamento → ainda pode estar disponível
                     el.classList.add('dia-disponivel');
 
                     el.onclick = () => {
@@ -1765,7 +2047,6 @@ $logado = isset($_SESSION['usuario_id']);
                     };
 
                 } else {
-                    // Tem agendamento → ainda pode ter vagas
                     el.classList.add('dia-disponivel');
 
                     el.onclick = () => {
@@ -1844,9 +2125,21 @@ $logado = isset($_SESSION['usuario_id']);
             }
         }
 
+        // ==============================
+        // ETAPA 3 - RESUMO FINAL
+        // ==============================
+
         function converterParaMinutos(hora) {
             const [h, m] = hora.split(":").map(Number);
             return h * 60 + m;
+        }
+
+        function pegarMinutos(tempo) { return parseInt(tempo.replace(" MIN", "")); }
+
+        function calcularDuracaoTotal() {
+            let total = 0;
+            servicosSelecionados.forEach(serv => { total += pegarMinutos(serv.tempo); });
+            return total;
         }
 
         function formatarHora(min) {
@@ -1855,9 +2148,74 @@ $logado = isset($_SESSION['usuario_id']);
             return `${h}:${m}`;
         }
 
+        // ==============================
+        // ETAPA 4 - CONFIRMAÇÃO
+        // ==============================
+
+        function confirmarAgendamento() {
+            const nome = document.querySelector('input[name="nome"]').value;
+            const whatsapp = document.querySelector('input[name="whatsapp"]').value;
+            if (!usuario) { alert("Você precisa estar logado!"); return; }
+            const dadosParaEnviar = {
+                cliente_nome: nome,
+                whatsapp: whatsapp,
+                data: selectedFullDate,
+                hora_inicio: selectedTimeValue,
+                duracao: calcularDuracaoTotal(),
+                servicos: servicosSelecionados.map(s => s.nome),
+                valor_total: calcularTotal()
+            };
+            fetch("/api/agendamento/salvar_agendamento.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dadosParaEnviar)
+            })
+                .then(res => res.json())
+                .then(resposta => {
+                    if (resposta.status === "ok") mostrarNotificacao();
+                    else alert("Erro ao salvar");
+                });
+        }
+
+        function mostrarNotificacao() {
+            const n = document.getElementById("notificacao");
+            n.classList.remove("oculto");
+            setTimeout(() => n.classList.add("oculto"), 3000);
+        }
+
+        function carregarAgendamento() {
+            const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+            if (!usuario) return;
+            fetch("/api/salvar_agendamento/" + usuario.id)
+                .then(res => res.json())
+                .then(agendamento => {
+                    if (!agendamento) return;
+                    const container = document.getElementById("meu-agendamento");
+                    if (!container) return;
+                    container.innerHTML = `<h3>Seu Agendamento</h3><p><b>Data:</b> ${agendamento.data}</p><p><b>Total:</b> ${agendamento.total}</p>`;
+                    container.classList.remove("oculto");
+                });
+        }
+
+        // ==============================
+        // EXPOSIÇÃO GLOBAL (DEBUG / HTML)
+        // ==============================
+
         window.mostrarServicos = mostrarServicos;
 
+        window.addEventListener("scroll", function () {
+            const nav = document.querySelector(".nav-principal");
+
+            if (window.scrollY > 50) {
+                nav.classList.add("nav-scroll");
+            } else {
+                nav.classList.remove("nav-scroll");
+            }
+        });
+
+
     </script>
+
 </body>
 
 </html>

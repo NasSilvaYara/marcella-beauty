@@ -1,3 +1,45 @@
+/*
+===========================================================
+ARQUIVO: buscar_agendamento.php
+
+FUNÇÃO:
+Buscar os dados de um agendamento específico.
+
+COMO FUNCIONA:
+- Recebe o ID do agendamento via requisição GET
+- Conecta ao banco de dados
+- Valida se o ID foi informado
+- Executa uma consulta usando prepared statement
+- Busca o agendamento correspondente ao ID
+- Retorna os dados encontrados
+
+RETORNO:
+Objeto JSON contendo:
+- id
+- cliente_nome
+- cliente_telefone
+- data
+- hora_inicio
+- duracao
+- servicos
+- valor_total
+- status
+
+OU:
+- erro (mensagem, se não encontrado ou inválido)
+
+USO:
+- Utilizado para visualizar detalhes de um agendamento
+- Pode ser usado em modais, edição ou visualização no sistema
+- Integrado ao frontend via AJAX
+
+OBS:
+- Usa prepared statement (seguro contra SQL Injection)
+- Retorna apenas um registro específico
+- Retorna erro caso o ID não exista no banco
+===========================================================
+*/
+
 <?php
 
 header('Content-Type: application/json');

@@ -1,42 +1,49 @@
-/*
-===========================================================
-ARQUIVO: auth/login_google.php
-
-PROPÓSITO:
-Autenticar usuário usando Google Sign‑In com token.
-
-FUNCIONALIDADE:
-- Recebe JSON com id_token da Google API.
-- Faz fetch em endpoint do Google para validar token.
-- Se token válido, recupera o email + nome do usuário.
-- Guarda dados do usuário na sessão:
-  $_SESSION['usuario_id'], $_SESSION['usuario_nome'],
-  $_SESSION['usuario_email'].
-- Retorna JSON { success: true } para o front.
-- Em caso de falha, retorna success:false com mensagem.
-===========================================================
-*/
-
 <?php
 session_start();
+header('Content-Type: application/json');
 
+// pega JSON corretamente
 $data = json_decode(file_get_contents("php://input"), true);
-$id_token = $data['id_token'];
+$id_token = $data['credential'] ?? null;
 
-if ($id_token) {
-    $url = "https://oauth2.googleapis.com/tokeninfo?id_token=" . $id_token;
-    $response = file_get_contents($url);
-    $user = json_decode($response, true);
-
-    if (isset($user['email'])) {
-
-        $_SESSION['usuario_id'] = $user['sub']; 
-        $_SESSION['usuario_nome'] = $user['name'];
-        $_SESSION['usuario_email'] = $user['email'];
-
-        echo json_encode(['success' => true]);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Token inválido']);
-    }
+if (!$id_token) {
+    echo json_encode(['success' => false, 'message' => 'Token não enviado']);
+    exit;
 }
-?>
+
+$url = "https://oauth2.googleapis.com/tokeninfo?id_token=" . $id_token;
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+if (!$response) {
+    echo json_encode(['success' => false, 'message' => 'Erro ao validar token']);
+    exit;
+}
+
+$user = json_decode($response, true);
+
+$CLIENT_ID = "821436734385-7cdnrc9a23v52qkfekevi35sumdr4so8.apps.googleusercontent.com";
+
+if (
+    isset($user['email']) &&
+    isset($user['aud']) &&
+    $user['aud'] === $CLIENT_ID
+) {
+    $_SESSION['usuario_id'] = $user['sub'];
+    $_SESSION['usuario_nome'] = $user['name'] ?? 'Usuário';
+    $_SESSION['usuario_email'] = $user['email'];
+
+    echo json_encode(['success' => true]);
+
+} else {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Token inválido ou client_id incorreto',
+        'debug' => $user
+    ]);
+}

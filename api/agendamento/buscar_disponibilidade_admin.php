@@ -41,55 +41,61 @@ if($conn->connect_error){
 $mes = intval($_GET['mes'] ?? date("n"));
 $ano = intval($_GET['ano'] ?? date("Y"));
 
+// Descobre quantos dias tem o mês
+$diasMes = cal_days_in_month(CAL_GREGORIAN, $mes, $ano);
+
+// Busca regras de disponibilidade
 $sql = "SELECT * FROM disponibilidade WHERE mes=? AND ano=?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii",$mes,$ano);
 $stmt->execute();
 $res = $stmt->get_result();
 
+// Monta array de regras por dia da semana
 $regras = [];
-
 while($row = $res->fetch_assoc()){
-    $regras[] = $row;
+    $regras[$row['dia_semana']] = [
+        "tipo" => $row['tipo'],
+        "hora_inicio" => $row['hora_inicio'],
+        "hora_fim" => $row['hora_fim']
+    ];
 }
-
-$diasMes = cal_days_in_month(CAL_GREGORIAN,$mes,$ano);
 
 $resultado = [];
 
-for($dia=1;$dia<=$diasMes;$dia++){
+$mapa = [
+    1 => "segunda",
+    2 => "terca",
+    3 => "quarta",
+    4 => "quinta",
+    5 => "sexta",
+    6 => "sabado",
+    7 => "domingo"
+];
 
-    $data = $ano."-".str_pad($mes,2,"0",STR_PAD_LEFT)."-".str_pad($dia,2,"0",STR_PAD_LEFT);
+for($dia=1; $dia<=$diasMes; $dia++){
 
-    $numeroSemana = date("N",strtotime($data));
-
-    $mapa = [
-        1=>"segunda",
-        2=>"terca",
-        3=>"quarta",
-        4=>"quinta",
-        5=>"sexta",
-        6=>"sabado",
-        7=>"domingo"
-    ];
-
+    $data = sprintf("%04d-%02d-%02d", $ano, $mes, $dia);
+    $numeroSemana = date("N", strtotime($data));
     $diaSemana = $mapa[$numeroSemana];
 
-    foreach($regras as $regra){
-
-        if($regra['dia_semana'] == $diaSemana){
-
-            $resultado[] = [
-                "tipo"=>$regra['tipo'],
-                "dia"=>$data,
-                "inicio"=>$regra['hora_inicio'],
-                "fim"=>$regra['hora_fim']
-            ];
-
-        }
-
+    if(isset($regras[$diaSemana])){
+        $diaFinal = [
+            "tipo" => $regras[$diaSemana]['tipo'],
+            "dia" => $data,
+            "inicio" => $regras[$diaSemana]['hora_inicio'],
+            "fim" => $regras[$diaSemana]['hora_fim']
+        ];
+    } else {
+        $diaFinal = [
+            "tipo" => "folga",
+            "dia" => $data,
+            "inicio" => null,
+            "fim" => null
+        ];
     }
 
+    $resultado[] = $diaFinal;
 }
 
 echo json_encode($resultado);

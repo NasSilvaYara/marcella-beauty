@@ -1,3 +1,34 @@
+/*
+===========================================================
+ARQUIVO: cancelar_agendamento.php
+
+FUNÇÃO:
+Cancelar um agendamento existente na agenda.
+
+COMO FUNCIONA:
+- Recebe o ID do agendamento via requisição POST
+- Conecta ao banco de dados
+- Valida se o ID foi informado
+- Atualiza o status do agendamento para "cancelado"
+- Não remove o registro, apenas altera seu estado
+
+RETORNO:
+Objeto JSON contendo:
+- sucesso (true/false)
+- erro (mensagem, se houver)
+
+USO:
+- Utilizado para cancelar agendamentos no sistema
+- Permite manter histórico sem excluir dados
+- Integrado ao painel admin ou interface do cliente
+
+OBS:
+- Usa prepared statement (mais seguro contra SQL Injection)
+- O agendamento permanece no banco, apenas marcado como cancelado
+- Pode ser filtrado em consultas futuras (ex: horários disponíveis)
+===========================================================
+*/
+
 <?php
 
 header('Content-Type: application/json');
